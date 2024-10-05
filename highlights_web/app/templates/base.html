@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Book Annotations{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-sky-800 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-xl font-bold">Book Annotations</a>
+            <a href="/books" class="hover:underline">Book List</a>
+        </div>
+    </nav>
+    <main class="container mx-auto mt-8 p-4">
+        {% block content %}{% endblock %}
+    </main>
+    <script>
+        function toggleFavorite(annotationId, button) {
+            fetch('/toggle_favorite/' + annotationId, {method: 'POST'})
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        button.classList.toggle('text-yellow-500');
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

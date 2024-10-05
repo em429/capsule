@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book_data.title }} - Annotations{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-6">{{ book_data.title }}</h1>
+<div class="space-y-6">
+    {% for annotation in book_data.annotations %}
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <p class="text-gray-700">{{ annotation.text }}</p>
+        <button class="mt-2 text-2xl focus:outline-none {% if annotation.is_favorite %}text-yellow-500{% endif %}"
+                onclick="toggleFavorite({{ annotation.id }}, this)">
+            &#9733;
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
