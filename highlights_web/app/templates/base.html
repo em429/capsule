@@ -6,14 +6,14 @@
     <title>{% block title %}Book Annotations{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <nav class="bg-sky-800 text-white p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="text-xl font-bold">Book Annotations</a>
-            <a href="/books" class="hover:underline">Book List</a>
+<body class="min-h-screen bg-slate-100">
+    <nav class="bg-sky-800 text-white">
+        <div class="px-3 max-w-2xl flex container justify-between">
+            <a href="/" class="text-xl font-bold">Random</a>
+            <a href="/books" class="hover:underline">books</a>
         </div>
     </nav>
-    <main class="container mx-auto mt-8 p-4">
+    <main class="px-3 container max-w-2xl mt-8">
         {% block content %}{% endblock %}
     </main>
     <script>
