@@ -1,5 +1,9 @@
+#!/usr/bin/env python3
+# A tiny webapp to display highlights by querying Calibre's metadata.db
+
 import os
 import sqlite3
+import json
 from flask import Flask, jsonify, render_template_string, request, abort
 
 # Set default DB path and allow overwriting with an environment variable
@@ -9,10 +13,25 @@ DB_PATH = os.getenv("BOOKS_DB_PATH", DEFAULT_DB_PATH)
 # Initialize Flask app
 app = Flask(__name__)
 
+# File to store favorites
+FAVORITES_FILE = 'favorites.json'
+
+# Load favorites from file
+def load_favorites():
+    if os.path.exists(FAVORITES_FILE):
+        with open(FAVORITES_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+# Save favorites to file
+def save_favorites(favorites):
+    with open(FAVORITES_FILE, 'w') as f:
+        json.dump(favorites, f)
+
 # Query function to get 3 random results
 def get_random_annotations():
     query = """
-    SELECT a.searchable_text, b.title, b.id
+    SELECT a.id, a.searchable_text, b.title, b.id as book_id
     FROM annotations a
     JOIN books b ON a.book = b.id
     WHERE a.searchable_text != ''
@@ -26,7 +45,14 @@ def get_random_annotations():
         cur.execute(query)
         rows = cur.fetchall()
     
-    return [{"searchable_text": row["searchable_text"], "title": row["title"], "book_id": row["id"]} for row in rows]
+    favorites = load_favorites()
+    return [{
+        "id": row["id"],
+        "searchable_text": row["searchable_text"], 
+        "title": row["title"], 
+        "book_id": row["book_id"],
+        "is_favorite": str(row["id"]) in favorites
+    } for row in rows]
 
 # Query function to get all books with annotations
 def get_books_with_annotations():
@@ -49,7 +75,7 @@ def get_books_with_annotations():
 # Query function to get all annotations for a specific book
 def get_book_annotations(book_id):
     query = """
-    SELECT a.searchable_text, b.title
+    SELECT a.id, a.searchable_text, b.title
     FROM annotations a
     JOIN books b ON a.book = b.id
     WHERE a.book = ? AND a.searchable_text != ''
@@ -65,9 +91,14 @@ def get_book_annotations(book_id):
     if not rows:
         return None
     
+    favorites = load_favorites()
     return {
         "title": rows[0]["title"],
-        "annotations": [row["searchable_text"] for row in rows]
+        "annotations": [{
+            "id": row["id"],
+            "text": row["searchable_text"],
+            "is_favorite": str(row["id"]) in favorites
+        } for row in rows]
     }
 
 @app.route('/annotations', methods=['GET'])
@@ -114,6 +145,16 @@ def index():
                     margin-top: 20px;
                     font-weight: bold;
                 }
+                .star-btn {
+                    background: none;
+                    color: #9d9d9d;
+                    border: none;
+                    font-size: 1.5em;
+                    cursor: pointer;
+                }
+                .star-btn.favorited {
+                    color: gold;
+                }
             </style>
         </head>
         <body>
@@ -126,9 +167,24 @@ def index():
                       <h2>{{ annotation.title }}</h2>
                     </a>
                     <p>{{ annotation.searchable_text }}</p>
+                    <button class="star-btn {% if annotation.is_favorite %}favorited{% endif %}" 
+                            onclick="toggleFavorite({{ annotation.id }}, this)">
+                        &#9733;
+                    </button>
                 </div>
                 {% endfor %}
             </div>
+            <script>
+                function toggleFavorite(annotationId, button) {
+                    fetch('/toggle_favorite/' + annotationId, {method: 'POST'})
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                button.classList.toggle('favorited');
+                            }
+                        });
+                }
+            </script>
         </body>
         </html>
         """
@@ -220,6 +276,15 @@ def book_annotations(book_id):
                     margin: 0;
                     color: #333;
                 }
+                .star-btn {
+                    background: none;
+                    border: none;
+                    font-size: 1.5em;
+                    cursor: pointer;
+                }
+                .star-btn.favorited {
+                    color: gold;
+                }
             </style>
         </head>
         <body>
@@ -227,17 +292,45 @@ def book_annotations(book_id):
             <div id="annotations-list">
                 {% for annotation in book_data.annotations %}
                 <div class="annotation">
-                    <p>{{ annotation }}</p>
+                    <p>{{ annotation.text }}</p>
+                    <button class="star-btn {% if annotation.is_favorite %}favorited{% endif %}" 
+                            onclick="toggleFavorite({{ annotation.id }}, this)">
+                        &#9733;
+                    </button>
                 </div>
                 {% endfor %}
             </div>
             <a href="/books">Back to books list</a>
+            <script>
+                function toggleFavorite(annotationId, button) {
+                    fetch('/toggle_favorite/' + annotationId, {method: 'POST'})
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                button.classList.toggle('favorited');
+                            }
+                        });
+                }
+            </script>
         </body>
         </html>
         """
         return render_template_string(html_template, book_data=book_data)
     except Exception as e:
         return f"<p>Error: {str(e)}</p>", 500
+
+@app.route('/toggle_favorite/<int:annotation_id>', methods=['POST'])
+def toggle_favorite(annotation_id):
+    favorites = load_favorites()
+    annotation_id_str = str(annotation_id)
+    
+    if annotation_id_str in favorites:
+        del favorites[annotation_id_str]
+    else:
+        favorites[annotation_id_str] = True
+    
+    save_favorites(favorites)
+    return jsonify({"success": True})
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
