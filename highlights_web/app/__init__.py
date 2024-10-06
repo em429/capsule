@@ -1,10 +1,11 @@
 from flask import Flask, render_template, jsonify, abort
 from config import Config
 from app.models import get_random_annotations, get_books_with_annotations, get_book_annotations, get_favorited_annotations
-from app.utils import is_favorite, toggle_favorite
+from app.utils import is_favorite, toggle_favorite, to_datetime
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.jinja_env.filters['to_datetime'] = to_datetime
 
 @app.route('/', methods=['GET'])
 def index():

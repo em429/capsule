@@ -8,7 +8,7 @@
 </head>
 <body class="min-h-screen bg-slate-100">
     <nav class="bg-sky-800 text-white">
-        <div class="px-3 max-w-2xl flex container justify-between">
+        <div class="px-5 max-w-2xl flex container justify-between">
             <a href="/" class="text-xl text-sky-50 font-bold">Random</a>
             <div class="space-x-4">
                 <a href="/books" class="text-sky-50 hover:underline">Books</a>
@@ -16,7 +16,7 @@
             </div>
         </div>
     </nav>
-    <main class="px-3 container max-w-2xl mt-8">
+    <main class="px-5 container max-w-2xl mt-8">
         {% block content %}{% endblock %}
         <a href="/">
             <img class="mb-8 my-8 max-w-[200px] mx-auto" src="{{ url_for('static', filename='images/doggo.webp') }}" alt="Illustration of dog fetching stack of papers">
@@ -28,7 +28,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        button.classList.toggle('text-yellow-500');
+                        button.classList.toggle('text-yellow-300/70');
                     }
                 });
         }

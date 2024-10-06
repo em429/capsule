@@ -7,12 +7,16 @@
 <div class="space-y-6">
     {% for annotation in book_data.annotations %}
     <div class="">
-        <button class="float-right ml-1 text-slate-200 text-3xl focus:outline-none {% if annotation.is_favorite %}text-yellow-500{% endif %}"
+        <p class="text-gray-700">{{ annotation.text }}</p>
+        <!-- timestamp -->
+        <span class="mt-1 mr-2 float-left text-slate-400/50 font-thin">{{ annotation.timestamp | float | to_datetime() }}</span>
+
+        <!-- favorite button-->
+        <button class="text-xl text-slate-300/50 focus:outline-none {% if annotation.is_favorite %}text-yellow-300/70{% endif %}"
                 onclick="toggleFavorite({{ annotation.id }}, this)">
             &#9733;
         </button>
-        <p class="text-gray-700">{{ annotation.text }}
-        </p>
+
     </div>
     {% endfor %}
 </div>

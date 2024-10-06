@@ -1,6 +1,11 @@
 import json
 import os
+from datetime import datetime
+
 from flask import current_app
+
+def to_datetime(value, format="%Y-%m-%d %H:%M:%S"):
+    return datetime.fromtimestamp(value).strftime(format)
 
 def load_favorites():
     favorites_file = current_app.config['FAVORITES_FILE']

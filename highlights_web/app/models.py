@@ -12,7 +12,7 @@ def get_db_connection():
 
 def get_random_annotations():
     query = """
-    SELECT a.id, a.searchable_text, b.title, b.id as book_id
+    SELECT a.id, a.searchable_text, a.timestamp, b.title, b.id as book_id
     FROM annotations a
     JOIN books b ON a.book = b.id
     WHERE a.searchable_text != ''
@@ -29,7 +29,8 @@ def get_random_annotations():
         "id": row["id"],
         "searchable_text": row["searchable_text"], 
         "title": row["title"], 
-        "book_id": row["book_id"]
+        "book_id": row["book_id"],
+        "timestamp": row["timestamp"]
     } for row in rows]
 
 def get_books_with_annotations():
@@ -50,7 +51,7 @@ def get_books_with_annotations():
 
 def get_book_annotations(book_id):
     query = """
-    SELECT a.id, a.searchable_text, b.title
+    SELECT a.id, a.searchable_text, a.timestamp, b.title
     FROM annotations a
     JOIN books b ON a.book = b.id
     WHERE a.book = ? AND a.searchable_text != ''
@@ -69,13 +70,14 @@ def get_book_annotations(book_id):
         "title": rows[0]["title"],
         "annotations": [{
             "id": row["id"],
-            "text": row["searchable_text"]
+            "text": row["searchable_text"],
+            "timestamp": row["timestamp"]
         } for row in rows]
     }
 
 def get_favorited_annotations():
     query = """
-    SELECT a.id, a.searchable_text, b.id as book_id, b.title as book_title
+    SELECT a.id, a.searchable_text, a.timestamp, b.id as book_id, b.title as book_title
     FROM annotations a
     JOIN books b ON a.book = b.id
     WHERE a.searchable_text != ''
@@ -100,7 +102,8 @@ def get_favorited_annotations():
                 }
             favorited_annotations[book_id]['annotations'].append({
                 'id': row['id'],
-                'text': row['searchable_text']
+                'text': row['searchable_text'],
+                'timestamp': row['timestamp']
             })
     
     return favorited_annotations

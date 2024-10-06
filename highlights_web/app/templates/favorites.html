@@ -13,11 +13,17 @@
         <div class="space-y-4">
             {% for annotation in book_data.annotations %}
             <div class="">
-                <button class="float-right ml-1 text-yellow-500 text-3xl focus:outline-none"
+                <p class="text-gray-700">{{ annotation.text }}</p>
+
+                <!-- timestamp -->
+                <span class="mt-1 mr-2 float-left text-slate-400/50 font-thin">{{ annotation.timestamp | float | to_datetime() }}</span>
+
+                <!-- favorite button-->
+                <button class="text-xl focus:outline-none  {% if not annotation.is_favorite %}text-slate-300/50{% endif %} text-yellow-300/70"
                         onclick="toggleFavorite({{ annotation.id }}, this)">
                     &#9733;
                 </button>
-                <p class="text-gray-700">{{ annotation.text }}</p>
+
             </div>
             {% endfor %}
         </div>

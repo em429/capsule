@@ -3,21 +3,33 @@
 {% block title %}Random Annotations{% endblock %}
 
 {% block content %}
-<h1 class="text-sky-900 text-3xl font-bold mb-6">Random Annotations</h1>
-<div class="space-y-6">
+<h1 class="text-sky-900 font-bold mb-6">Random Annotations</h1>
+<div class="space-y-12">
     {% for annotation in annotations %}
     <div class="">
+
+        <!-- title -->
         <div class="flex container justify-between items-center">
-            <a href="/book/{{ annotation.book_id }}" class="text-xl font-semibold text-sky-600 hover:underline">
-                {{ annotation.title }}
-            </a>
-            <button class="text-3xl text-slate-300/70 focus:outline-none {% if annotation.is_favorite %}text-yellow-500{% endif %}"
+            <a href="/book/{{ annotation.book_id }}" class="text-xl font-semibold text-sky-600 hover:underline">{{ annotation.title }}</a>
+        </div>
+
+        <div class="">
+            <!-- annotation text -->
+            <p class="text-gray-700">{{ annotation.searchable_text }}</p>
+
+
+            <!-- timestamp -->
+            <span class="mt-1 mr-2 float-left text-slate-400/50 font-thin">{{ annotation.timestamp | float | to_datetime() }}</span>
+
+            <!-- favorite button-->
+            <button class="text-xl text-slate-300/50 focus:outline-none {% if annotation.is_favorite %}text-yellow-300/70{% endif %}"
                     onclick="toggleFavorite({{ annotation.id }}, this)">
                 &#9733;
             </button>
         </div>
-        <p class="mt-2 text-gray-700">{{ annotation.searchable_text }}</p>
+
     </div>
+
     {% endfor %}
 </div>
 {% endblock %}
