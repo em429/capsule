@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, abort
 from config import Config
-from app.models import get_random_annotations, get_books_with_annotations, get_book_annotations
+from app.models import get_random_annotations, get_books_with_annotations, get_book_annotations, get_favorited_annotations
 from app.utils import is_favorite, toggle_favorite
 
 app = Flask(__name__)
@@ -32,3 +32,7 @@ def toggle_favorite_route(annotation_id):
     success = toggle_favorite(annotation_id)
     return jsonify({"success": success})
 
+@app.route('/favorites', methods=['GET'])
+def favorites():
+    favorited_annotations = get_favorited_annotations()
+    return render_template('favorites.html', favorited_annotations=favorited_annotations)
