@@ -109,3 +109,26 @@ def get_favorited_annotations():
             })
     
     return favorited_annotations
+
+def get_all_annotations():
+    query = """
+    SELECT a.id, a.searchable_text, a.timestamp, b.id as book_id, b.title as book_title
+    FROM annotations a
+    JOIN books b ON a.book = b.id
+    WHERE a.searchable_text != ''
+    ORDER BY a.timestamp DESC, b.title;
+    """
+    
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(query)
+        rows = cur.fetchall()
+    
+    return [{
+        "id": row["id"],
+        "text": row["searchable_text"],
+        "timestamp": row["timestamp"],
+        "book_id": row["book_id"],
+        "book_title": row["book_title"]
+    } for row in rows]
+

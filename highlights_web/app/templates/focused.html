@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Focused View{% endblock %}
+
+{% block content %}
+{% if book_title %}
+    <h2 class="text-xl font-semibold mb-2">{{ book_title }}</h2>
+{% endif %}
+<div class="pb-4 mb-6">
+    <p class="mb-4">{{ annotation.text }}</p>
+
+    <!-- timestamp -->
+    <span class="mt-1 mr-2 float-left text-slate-400/50 font-thin">{{ annotation.timestamp | float | to_datetime() }}</span>
+    <!-- favorite button-->
+    <button class="float-right text-xl text-slate-300/50 focus:outline-none {% if annotation.is_favorite %}text-yellow-300/70{% endif %}"
+            onclick="toggleFavorite({{ annotation.id }}, this)">
+        &#9733;
+    </button>
+
+</div>
+<div class="flex justify-between items-center">
+    <a href="{{ url_for('focused_view', book_id=book_id, index=0) }}" class="text-sky-900 font-bold">
+        << First
+    </a>
+    <a href="{{ url_for('focused_view', book_id=book_id, index=index-1) }}" class="text-sky-900 font-bold">
+        < Previous
+    </a>
+    <span>{{ index + 1 }} / {{ total }}</span>
+    <a href="{{ url_for('focused_view', book_id=book_id, index=index+1) }}" class="text-sky-900 font-bold">
+        Next >
+    </a>
+    <a href="{{ url_for('focused_view', book_id=book_id, index=total-1) }}" class="text-sky-900 font-bold">
+        Last >>
+    </a>
+</div>
+<div class="flex space-x-2 justify-center mt-4">
+    <a href="{{ url_for('focused_view') }}" class="text-sky-900 hover:underline">View all highlights</a>
+        <span class="text-sky-600"> | </span>
+        <a href="{{ url_for('books_list') }}" class="text-sky-900 hover:underline">Select a book</a>
+</div>
+{% endblock %}
