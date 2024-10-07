@@ -35,10 +35,11 @@ def get_random_annotations():
 
 def get_books_with_annotations():
     query = """
-    SELECT DISTINCT b.id, b.title
+    SELECT b.id, b.title, COUNT(a.id) AS annotation_count
     FROM books b
     JOIN annotations a ON a.book = b.id
     WHERE a.searchable_text != ''
+    GROUP BY b.id, b.title
     ORDER BY b.title;
     """
     
@@ -47,7 +48,8 @@ def get_books_with_annotations():
         cur.execute(query)
         rows = cur.fetchall()
     
-    return [{"id": row["id"], "title": row["title"]} for row in rows]
+    return [{"id": row["id"], "title": row["title"], "annotation_count": row["annotation_count"]} for row in rows]
+
 
 def get_book_annotations(book_id):
     query = """
