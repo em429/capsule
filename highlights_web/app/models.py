@@ -105,7 +105,8 @@ def get_favorited_annotations():
             favorited_annotations[book_id]['annotations'].append({
                 'id': row['id'],
                 'text': row['searchable_text'],
-                'timestamp': row['timestamp']
+                'timestamp': row['timestamp'],
+                'is_favorite': True,
             })
     
     return favorited_annotations
