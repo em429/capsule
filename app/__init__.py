@@ -1,6 +1,14 @@
 from flask import Flask, render_template, jsonify, abort, request
 from config import Config
-from app.models import get_random_annotations, get_books_with_annotations, get_book_annotations, get_favorited_annotations, get_all_annotations, get_recent_books
+from app.models import (
+    get_random_annotations,
+    get_books_with_annotations,
+    get_book_annotations,
+    get_favorited_annotations,
+    get_all_annotations,
+    get_recent_books,
+    get_flashback_annotations
+)
 from app.utils import is_favorite, toggle_favorite, to_datetime
 
 app = Flask(__name__)
@@ -18,7 +26,11 @@ def index():
 def books_list():
     books = get_books_with_annotations()
     recent_books = get_recent_books()
-    return render_template('books.html', recent_books=recent_books, books=books)
+    flashback_data = get_flashback_annotations()
+    return render_template('books.html',
+                            recent_books=recent_books,
+                            books=books,
+                            flashback_data=flashback_data)
 
 @app.route('/book/<int:book_id>', methods=['GET'])
 def book_annotations(book_id):

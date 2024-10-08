@@ -1,5 +1,7 @@
 import sqlite3
 from flask import current_app
+from datetime import datetime, timedelta
+import random
 
 from app.utils import is_favorite, toggle_favorite, load_favorites
 
@@ -165,3 +167,42 @@ def get_recent_books():
         "title": row["book_title"],
         "latest_annotation": row["latest_annotation"]
     } for row in rows]
+
+def get_flashback_annotations():
+    years_ago = random.choice([1, 2, 3])
+    current_date = datetime.now()
+    target_date = current_date.replace(year=current_date.year - years_ago)
+    date_range = 10  # Days before and after the target date
+
+    query = """
+    SELECT DISTINCT b.id as book_id, b.title as book_title, a.id as annotation_id, a.searchable_text, a.timestamp
+    FROM annotations a
+    JOIN books b ON a.book = b.id
+    WHERE a.searchable_text != ''
+      AND a.timestamp BETWEEN ? AND ?
+    ORDER BY RANDOM()
+    LIMIT 1;
+    """
+
+    start_date = target_date - timedelta(days=date_range)
+    end_date = target_date + timedelta(days=date_range)
+
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(query, (start_date.timestamp(), end_date.timestamp()))
+        rows = cur.fetchall()
+
+    flashback_books = []
+    for row in rows:
+        flashback_books.append({
+            "book_id": row["book_id"],
+            "book_title": row["book_title"],
+            "annotation_id": row["annotation_id"],
+            "text": row["searchable_text"],
+            "timestamp": row["timestamp"]
+        })
+
+    return {
+        "years_ago": years_ago,
+        "books": flashback_books
+    }
