@@ -7,16 +7,7 @@
     <h2 class="text-xl text-sky-700 dark:text-sky-400 font-semibold mb-2">{{ book_title }}</h2>
 {% endif %}
 <div class="pb-4 mb-6">
-    <p class="mb-4 text-slate-700 dark:text-sky-100">{{ annotation.text }}</p>
-
-    <!-- timestamp -->
-    <span class="mt-1 mr-2 float-left text-slate-400/50 font-thin">{{ annotation.timestamp | float | to_datetime() }}</span>
-    <!-- favorite button-->
-    <button class="float-right text-xl text-slate-400/50 focus:outline-none {% if annotation.is_favorite %}text-sky-500/70{% endif %}"
-            onclick="toggleFavorite({{ annotation.id }}, this)">
-        &#9733;
-    </button>
-
+    {{highlight_component(annotation)}}
 </div>
 <div class="flex justify-between items-center text-sky-900 dark:text-sky-400">
     <a href="{{ url_for('focused_view', book_id=book_id, index=0) }}" class="font-bold"><< First

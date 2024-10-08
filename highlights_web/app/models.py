@@ -27,7 +27,7 @@ def get_random_annotations():
     
     return [{
         "id": row["id"],
-        "searchable_text": row["searchable_text"], 
+        "text": row["searchable_text"], 
         "title": row["title"], 
         "book_id": row["book_id"],
         "timestamp": row["timestamp"]

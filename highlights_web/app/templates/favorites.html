@@ -12,17 +12,7 @@
         <div class="space-y-4">
             {% for annotation in book_data.annotations %}
             <div class="">
-                <p class="text-slate-700 dark:text-sky-100">{{ annotation.text }}</p>
-
-                <!-- timestamp -->
-                <span class="mt-1 mr-2 float-left text-slate-400/50 {% if annotation.is_favorite %}text-sky-500/70{% endif %} font-thin">{{ annotation.timestamp | float | to_datetime() }}</span>
-
-                <!-- favorite button-->
-                <button class="text-xl focus:outline-none text-sky-500/70"
-                        onclick="toggleFavorite({{ annotation.id }}, this)">
-                    &#9733;
-                </button>
-
+                {{highlight_component(annotation)}}
             </div>
             {% endfor %}
         </div>

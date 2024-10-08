@@ -1,0 +1,11 @@
+{% macro highlight_component(annotation) %}
+    <p class="text-slate-700 dark:text-sky-100">{{ annotation.text }}</p>
+    <!-- timestamp -->
+    <span class="mt-1 mr-2 float-left text-slate-400/50 font-thin">{{ annotation.timestamp | float | to_datetime() }}</span>
+
+    <!-- favorite button-->
+    <button class="text-xl focus:outline-none {% if annotation.is_favorite %}text-sky-500/70 {% else %} text-slate-400/50   {% endif %}"
+            onclick="toggleFavorite({{ annotation.id }}, this)">
+        &#9733;
+    </button>
+{% endmacro %}
