@@ -3,7 +3,10 @@
 {% block title %}{{ book_data.title }} - Annotations{% endblock %}
 
 {% block content %}
-<h1 class="text-3xl text-sky-900 dark:text-sky-600 font-bold mb-6">{{ book_data.title }}</h1>
+<div class="flex space-x-2 items-baseline">
+<h1 class="text-3xl text-sky-900 dark:text-sky-300 font-bold mb-6">{{ book_data.title }}</h1>
+<a href="{{ url_for('focused_view', book_id=book_data.id) }}" class="text-xl text-slate-500 hover:underline">focus</a>
+</div>
 <div class="space-y-6">
     {% for annotation in book_data.annotations %}
     <div class="">
