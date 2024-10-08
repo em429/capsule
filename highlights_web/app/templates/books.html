@@ -19,9 +19,9 @@
 <ul class="space-y-2">
     {% for book in books %}
     <li>
-        <a href="/book/{{ book.id }}" class="text-sky-600 hover:underline">{{ book.title }}</a>
+        <a href="/book/{{ book.id }}" class="text-sky-600 dark:text-sky-400 hover:underline">{{ book.title }}</a>
         <span class="text-slate-400">{{ book.annotation_count }}</span>
-        <a href="{{ url_for('focused_view', book_id=book.id) }}" class="text-blue-500 hover:underline">View focused</a>
+        <a href="{{ url_for('focused_view', book_id=book.id) }}" class="text-slate-500 hover:underline">focus</a>
     </li>
     {% endfor %}
 </ul>
