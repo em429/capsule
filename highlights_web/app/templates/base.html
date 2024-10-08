@@ -10,13 +10,11 @@
 </head>
 <body class="min-h-screen dark:bg-slate-900 bg-slate-100">
     <nav class="bg-sky-800 text-white">
-        <div class="px-5 max-w-2xl flex container justify-between">
-            <a href="/" class="text-xl text-sky-50 font-bold">random hilights</a>
-            <div class="space-x-4">
-                <a href="/books" class="text-sky-50 hover:underline">books</a>
-                <a href="/favorites" class="text-sky-50 hover:underline">favorites</a>
-                <a href="{{ url_for('focused_view') }}" class="text-sky-50 hover:underline">focused</a>
-            </div>
+        <div class="px-5 max-w-2xl space-x-4 flex container justify-end items-center">
+            <a href="/" class="text-sky-50">random</a>
+            <a href="/books" class="text-sky-50 hover:underline">books</a>
+            <a href="/favorites" class="text-sky-50 hover:underline">favorites</a>
+            <a href="{{ url_for('focused_view') }}" class="text-sky-50 hover:underline">focused</a>
         </div>
     </nav>
     <main class="px-5 container max-w-2xl mt-8">
