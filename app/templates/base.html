@@ -14,13 +14,16 @@
             <a href="/" class="text-sky-50">random</a>
             <a href="/books" class="text-sky-50 hover:underline">books</a>
             <a href="/favorites" class="text-sky-50 hover:underline">favorites</a>
-            <a href="{{ url_for('focused_view') }}" class="text-sky-50 hover:underline">focused</a>
+            <a href="{{ url_for('focused_view') }}" class="text-sky-50 hover:underline">
+                focused</a>
         </div>
     </nav>
     <main class="px-5 container max-w-2xl mt-8">
         {% block content %}{% endblock %}
         <a href="/">
-            <img class="mb-8 my-8 max-w-[200px] mx-auto" src="{{ url_for('static', filename='images/doggo.webp') }}" alt="Illustration of dog fetching stack of papers">
+            <img class="mb-8 my-8 max-w-[200px] mx-auto"
+                 src="{{ url_for('static', filename='images/doggo.webp') }}"
+                 alt="Illustration of dog fetching stack of papers">
         </a>
     </main>
     <script>

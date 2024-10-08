@@ -4,25 +4,37 @@
 
 {% block content %}
 <div class="mb-12">
-    <h2 class="text-2xl font-bold mb-4 text-sky-700 dark:text-sky-400">Recently Annotated Books</h2>
+    <h2 class="text-2xl font-bold mb-4 text-sky-700 dark:text-sky-400">
+        Recently Annotated Books</h2>
     <div class="grid grid-cols-1 gap-4">
         {% for book in recent_books %}
         <div class="bg-white dark:bg-slate-800 p-4 rounded shadow">
-            <a href="/book/{{ book.id }}" class="text-lg font-semibold text-sky-600 dark:text-sky-300 hover:underline">{{ book.title }}</a>
-            <a href="{{ url_for('focused_view', book_id=book.id) }}" class="text-slate-500 hover:underline">focus</a>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">Last annotated: {{ book.latest_annotation | float | to_datetime() }}</p>
+            <a href="/book/{{ book.id }}"
+               class="text-lg font-semibold text-sky-600 dark:text-sky-300 hover:underline">
+               {{ book.title }}
+            </a>
+            <a href="{{ url_for('focused_view', book_id=book.id) }}"
+               class="text-slate-500 hover:underline">
+               focus
+            </a>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">
+                Last annotated: {{ book.latest_annotation | float | to_datetime() }}
+            </p>
         </div>
         {% endfor %}
     </div>
 </div>
 
-<h2 class="text-2xl font-bold mb-4 text-sky-700 dark:text-sky-400">All books with highlights</h2>
+<h2 class="text-2xl font-bold mb-4 text-sky-700 dark:text-sky-400">
+    All books with highlights</h2>
 <ul class="space-y-2">
     {% for book in books %}
     <li>
-        <a href="/book/{{ book.id }}" class="text-sky-600 dark:text-sky-300 hover:underline">{{ book.title }}</a>
+        <a href="/book/{{ book.id }}" 
+           class="text-sky-600 dark:text-sky-300 hover:underline">{{ book.title }}</a>
         <span class="text-slate-400">{{ book.annotation_count }}</span>
-        <a href="{{ url_for('focused_view', book_id=book.id) }}" class="text-slate-500 hover:underline">focus</a>
+        <a href="{{ url_for('focused_view', book_id=book.id) }}"
+           class="text-slate-500 hover:underline">focus</a>
     </li>
     {% endfor %}
 </ul>
