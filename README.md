@@ -1,4 +1,4 @@
-## highlights_web
+## capsule
 
 Small, one-pager webapp that displays annotations made across your Calibre library.
 
