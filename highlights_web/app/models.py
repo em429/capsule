@@ -132,3 +132,35 @@ def get_all_annotations():
         "book_title": row["book_title"]
     } for row in rows]
 
+def get_recent_books():
+    query = """
+    WITH RankedBooks AS (
+        SELECT 
+            b.id AS book_id,
+            b.title AS book_title,
+            MAX(a.timestamp) AS latest_annotation,
+            ROW_NUMBER() OVER (ORDER BY MAX(a.timestamp) DESC) AS rank
+        FROM 
+            books b
+            JOIN annotations a ON b.id = a.book
+        WHERE 
+            a.searchable_text != ''
+        GROUP BY 
+            b.id, b.title
+    )
+    SELECT book_id, book_title, latest_annotation
+    FROM RankedBooks
+    WHERE rank <= 3
+    ORDER BY latest_annotation DESC;
+    """
+    
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(query)
+        rows = cur.fetchall()
+    
+    return [{
+        "id": row["book_id"],
+        "title": row["book_title"],
+        "latest_annotation": row["latest_annotation"]
+    } for row in rows]

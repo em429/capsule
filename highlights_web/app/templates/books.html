@@ -3,6 +3,19 @@
 {% block title %}Books with Annotations{% endblock %}
 
 {% block content %}
+<div class="mb-12">
+    <h2 class="text-2xl font-bold mb-4 text-sky-700 dark:text-sky-300">Recently Annotated Books</h2>
+    <div class="grid grid-cols-1 gap-4">
+        {% for book in recent_books %}
+        <div class="bg-white dark:bg-slate-800 p-4 rounded shadow">
+            <a href="/focused?book_id={{ book.id }}" class="text-lg font-semibold text-sky-600 dark:text-sky-400 hover:underline">{{ book.title }}</a>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">Last annotated: {{ book.latest_annotation | float | to_datetime() }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4 text-sky-700 dark:text-sky-300">All books with highlights</h2>
 <ul class="space-y-2">
     {% for book in books %}
     <li>
