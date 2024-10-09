@@ -3,14 +3,16 @@
 {% block title %}Focused View{% endblock %}
 
 {% block content %}
+
 {% if book_title %}
-    <h2 class="text-xl text-sky-600 dark:text-sky-400 font-semibold mb-2">
-        <!-- TODO make this a link to book page -->
-        {{ book_title }}</h2>
+    <h2 class="mb-2 text-xl text-sky-600 dark:text-sky-400 font-semibold mb-2">
+        <a href="/book/{{ annotation.book_id }}" class="hover:underline">{{ book_title }}</a></h2>
 {% endif %}
+
 <div class="pb-4 mb-6">
     {{highlight_component(annotation)}}
 </div>
+
 <div class="flex justify-between items-center text-sky-900 dark:text-sky-400">
     <a href="{{ url_for('focused_view', book_id=book_id, index=0) }}"
        class="font-bold"><< First</a>
