@@ -28,23 +28,29 @@
     </main>
     <script>
         function toggleFavorite(annotationId, button) {
-            fetch('/toggle_favorite/' + annotationId, {method: 'POST'})
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Toggle active, favorited:
-                        button.classList.toggle('dark:fill-sky-500');
-                        button.classList.toggle('dark:text-sky-500');
-                        button.classList.toggle('fill-sky-500')
-                        button.classList.toggle('text-sky-500')
-                        // Toggle inactive, not favorited:
-                        button.classList.toggle('dark:fill-sky-950');
-                        button.classList.toggle('dark:text-sky-900');
-                        button.classList.toggle('fill-slate-300')
-                        button.classList.toggle('text-slate-400')
-
-                    }
-                });
+            const isFavorited = button.classList.contains('dark:fill-sky-500') || button.classList.contains('fill-sky-500');
+            const action = isFavorited ? 'remove from' : 'add to';
+            const confirmMessage = `Are you sure you want to ${action} favorites?`;
+            
+            if (confirm(confirmMessage)) {
+                fetch('/toggle_favorite/' + annotationId, {method: 'POST'})
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // TODO: clean this up
+                            // Classes active when item is favorited:
+                            button.classList.toggle('dark:fill-sky-500');
+                            button.classList.toggle('dark:text-sky-500');
+                            button.classList.toggle('fill-sky-500')
+                            button.classList.toggle('text-sky-500')
+                            // Classes active when not favorited:
+                            button.classList.toggle('dark:fill-sky-950');
+                            button.classList.toggle('dark:text-sky-900');
+                            button.classList.toggle('fill-slate-300')
+                            button.classList.toggle('text-slate-400')
+                        }
+                    });
+            }
         }
     </script>
 </body>
