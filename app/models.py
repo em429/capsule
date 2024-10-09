@@ -55,7 +55,8 @@ def get_books_with_annotations():
 
 def get_book_annotations(book_id):
     query = """
-    SELECT a.id, a.searchable_text, a.timestamp, b.title, b.id as book_id
+    SELECT a.id, a.searchable_text, a.timestamp, b.title, b.id as book_id,
+           ROW_NUMBER() OVER (ORDER BY a.timestamp) - 1 as row_index
     FROM annotations a
     JOIN books b ON a.book = b.id
     WHERE a.book = ? AND a.searchable_text != ''
@@ -78,7 +79,8 @@ def get_book_annotations(book_id):
             "book_id": rows[0]["book_id"],
             "id": row["id"],
             "text": row["searchable_text"],
-            "timestamp": row["timestamp"]
+            "timestamp": row["timestamp"],
+            "row_index": row["row_index"]
         } for row in rows]
     }
 
@@ -119,7 +121,8 @@ def get_favorited_annotations():
 
 def get_all_annotations():
     query = """
-    SELECT a.id, a.searchable_text, a.timestamp, b.id as book_id, b.title as book_title
+    SELECT a.id, a.searchable_text, a.timestamp, b.id as book_id, b.title as book_title,
+           ROW_NUMBER() OVER (ORDER BY a.timestamp DESC, b.title) - 1 as row_index
     FROM annotations a
     JOIN books b ON a.book = b.id
     WHERE a.searchable_text != ''
@@ -136,7 +139,8 @@ def get_all_annotations():
         "text": row["searchable_text"],
         "timestamp": row["timestamp"],
         "book_id": row["book_id"],
-        "book_title": row["book_title"]
+        "book_title": row["book_title"],
+        "row_index": row["row_index"]
     } for row in rows]
 
 def get_recent_books():

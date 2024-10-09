@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, abort, request
+from flask import Flask, render_template, jsonify, abort, request, url_for, redirect
 from config import Config
 from app.models import (
     get_random_annotations,
@@ -54,6 +54,7 @@ def favorites():
 @app.route('/focused', methods=['GET'])
 def focused_view():
     book_id = request.args.get('book_id', type=int)
+    annotation_id = request.args.get('annotation_id', type=int)
     index = request.args.get('index', 0, type=int)
     
     if book_id:
@@ -64,10 +65,13 @@ def focused_view():
         book_title = book_data['book_title']
     else:
         annotations = get_all_annotations()
-        book_title = annotations[index]['book_title']
+        book_title = "All Books"
 
     total = len(annotations)
-    if index < 0:
+    
+    if annotation_id:
+        index = next((i for i, a in enumerate(annotations) if a['id'] == annotation_id), 0)
+    elif index < 0:
         index = 0
     elif index >= total:
         index = total - 1
@@ -81,3 +85,8 @@ def focused_view():
                            total=total, 
                            book_id=book_id,
                            book_title=book_title)
+
+@app.route('/focus/<int:annotation_id>', methods=['GET'])
+def focus_annotation(annotation_id):
+    book_id = request.args.get('book_id', type=int)
+    return redirect(url_for('focused_view', book_id=book_id, annotation_id=annotation_id))

@@ -15,7 +15,7 @@
                class="text-lg font-semibold text-sky-600 dark:text-sky-300 hover:underline">
                {{ book.book_title }}
             </a>
-            <a href="{{ url_for('focused_view', book_id=book.book_id, index=0) }}"
+            <a href="{{ url_for('focus_annotation', book_id=book.book_id, annotation_id=book.annotation_id) }}"
                class="text-slate-500 hover:underline ml-2">
                focus
             </a>
