@@ -9,9 +9,9 @@
         <!-- favorite button-->
         <button class="
             {% if annotation.is_favorite %}
-              fill-sky-500 text-sky-500
+              dark:fill-sky-500 dark:text-sky-500 fill-sky-700 text-sky-900
             {% else %}
-              fill-sky-950 text-sky-900
+              dark:fill-sky-950 dark:text-sky-900 fill-slate-300 text-slate-400
             {% endif %}"
             onclick="toggleFavorite({{ annotation.id }}, this)">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
