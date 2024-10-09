@@ -55,7 +55,7 @@ def get_books_with_annotations():
 
 def get_book_annotations(book_id):
     query = """
-    SELECT a.id, a.searchable_text, a.timestamp, b.title
+    SELECT a.id, a.searchable_text, a.timestamp, b.title, b.id as book_id
     FROM annotations a
     JOIN books b ON a.book = b.id
     WHERE a.book = ? AND a.searchable_text != ''
@@ -72,6 +72,7 @@ def get_book_annotations(book_id):
     
     return {
         "title": rows[0]["title"],
+        "id": rows[0]["book_id"],
         "annotations": [{
             "id": row["id"],
             "text": row["searchable_text"],
