@@ -15,7 +15,7 @@
     <!-- text -->
     <p class="text-slate-700 dark:text-sky-200">{{ annotation.text }}</p>
 
-    <div class="flex justify-between items-baseline">
+    <div class="flex justify-between items-center">
         <div class="flex items-center">
             <!-- timestamp -->
             <span class="mt-1 mr-2 float-left text-sky-700 font-light">
@@ -26,15 +26,14 @@
             {{ svg_favorite(annotation) }}
         </div>
 
-        <div class="flex space-x-4 items-baseline">
+        <div class="flex space-x-4 items-center">
 
+            <!-- open in epub-viewer button -->
+            {{ svg_open_in_epub_viewer(annotation) }}
             <!-- focus button -->
             {% if not request.path == '/focused' %}
                 {{ svg_focus(annotation) }}
             {% endif %}
-
-            <!-- open in epub-viewer button -->
-            {{ svg_open_in_epub_viewer(annotation) }}
 
         </div>
     </div>
