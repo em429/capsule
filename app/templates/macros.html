@@ -24,7 +24,8 @@
             {{ svg_open_in_epub_viewer(annotation) }}
 
             <!-- timestamp -->
-            <a href="{{ url_for('focus_annotation', annotation_id=annotation.id, book_id=annotation.book_id) }}" class="text-sm mr-2 float-left text-slate-400/70 dark:text-sky-900 font-light">
+            <a href="{{ url_for('focus_annotation', annotation_id=annotation.id, book_id=annotation.book_id) }}"
+                class="text-sm mr-2 float-left text-slate-400/70 dark:text-sky-900 font-light">
                 {{ annotation.timestamp | float | to_datetime() }}
             </a>
     
