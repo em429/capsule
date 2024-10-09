@@ -74,7 +74,7 @@ class TestApp(unittest.TestCase):
             books = get_books_with_annotations()
             self.assertTrue(len(books) > 0)
             for book in books:
-                self.assertIn('id', book)
+                self.assertIn('book_id', book)
                 self.assertIn('book_title', book)
                 self.assertIn('annotation_count', book)
 
@@ -84,7 +84,7 @@ class TestApp(unittest.TestCase):
             book_data = get_book_annotations(55)
             self.assertIsNotNone(book_data)
             self.assertIn('book_title', book_data)
-            self.assertIn('id', book_data)
+            self.assertIn('book_id', book_data)
             self.assertIn('annotations', book_data)
             self.assertTrue(len(book_data['annotations']) > 0)
 
@@ -113,7 +113,7 @@ class TestApp(unittest.TestCase):
             recent_books = get_recent_books()
             self.assertEqual(len(recent_books), 3)
             for book in recent_books:
-                self.assertIn('id', book)
+                self.assertIn('book_id', book)
                 self.assertIn('book_title', book)
                 self.assertIn('latest_annotation', book)
 
