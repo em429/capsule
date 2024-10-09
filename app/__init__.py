@@ -61,7 +61,7 @@ def focused_view():
         if book_data is None:
             abort(404)
         annotations = book_data['annotations']
-        book_title = book_data['title']
+        book_title = book_data['book_title']
     else:
         annotations = get_all_annotations()
         book_title = annotations[index]['book_title']

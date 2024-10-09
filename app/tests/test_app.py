@@ -65,7 +65,7 @@ class TestApp(unittest.TestCase):
             for annotation in annotations:
                 self.assertIn('id', annotation)
                 self.assertIn('text', annotation)
-                self.assertIn('title', annotation)
+                self.assertIn('book_title', annotation)
                 self.assertIn('book_id', annotation)
                 self.assertIn('timestamp', annotation)
 
@@ -75,7 +75,7 @@ class TestApp(unittest.TestCase):
             self.assertTrue(len(books) > 0)
             for book in books:
                 self.assertIn('id', book)
-                self.assertIn('title', book)
+                self.assertIn('book_title', book)
                 self.assertIn('annotation_count', book)
 
     def test_get_book_annotations(self):
@@ -83,7 +83,7 @@ class TestApp(unittest.TestCase):
             # Assuming there's at least one book with ID 1
             book_data = get_book_annotations(55)
             self.assertIsNotNone(book_data)
-            self.assertIn('title', book_data)
+            self.assertIn('book_title', book_data)
             self.assertIn('id', book_data)
             self.assertIn('annotations', book_data)
             self.assertTrue(len(book_data['annotations']) > 0)
@@ -93,7 +93,7 @@ class TestApp(unittest.TestCase):
             favorited = get_favorited_annotations()
             self.assertIsInstance(favorited, dict)
             for book_id, book_data in favorited.items():
-                self.assertIn('title', book_data)
+                self.assertIn('book_title', book_data)
                 self.assertIn('annotations', book_data)
                 self.assertTrue(len(book_data['annotations']) > 0)
 
@@ -114,7 +114,7 @@ class TestApp(unittest.TestCase):
             self.assertEqual(len(recent_books), 3)
             for book in recent_books:
                 self.assertIn('id', book)
-                self.assertIn('title', book)
+                self.assertIn('book_title', book)
                 self.assertIn('latest_annotation', book)
 
     def test_get_flashback_annotations(self):

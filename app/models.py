@@ -30,7 +30,7 @@ def get_random_annotations():
     return [{
         "id": row["id"],
         "text": row["searchable_text"], 
-        "title": row["title"], 
+        "book_title": row["title"], 
         "book_id": row["book_id"],
         "timestamp": row["timestamp"]
     } for row in rows]
@@ -50,7 +50,7 @@ def get_books_with_annotations():
         cur.execute(query)
         rows = cur.fetchall()
     
-    return [{"id": row["id"], "title": row["title"], "annotation_count": row["annotation_count"]} for row in rows]
+    return [{"id": row["id"], "book_title": row["title"], "annotation_count": row["annotation_count"]} for row in rows]
 
 
 def get_book_annotations(book_id):
@@ -71,9 +71,10 @@ def get_book_annotations(book_id):
         return None
     
     return {
-        "title": rows[0]["title"],
+        "book_title": rows[0]["title"],
         "id": rows[0]["book_id"],
         "annotations": [{
+            "book_title": rows[0]["title"],
             "id": row["id"],
             "text": row["searchable_text"],
             "timestamp": row["timestamp"]
@@ -102,11 +103,12 @@ def get_favorited_annotations():
             book_id = row['book_id']
             if book_id not in favorited_annotations:
                 favorited_annotations[book_id] = {
-                    'title': row['book_title'],
+                    'book_title': row['book_title'],
                     'annotations': []
                 }
             favorited_annotations[book_id]['annotations'].append({
                 'id': row['id'],
+                'book_id': row['book_id'],
                 'text': row['searchable_text'],
                 'timestamp': row['timestamp'],
                 'is_favorite': True,
@@ -165,7 +167,7 @@ def get_recent_books():
     
     return [{
         "id": row["book_id"],
-        "title": row["book_title"],
+        "book_title": row["book_title"],
         "latest_annotation": row["latest_annotation"]
     } for row in rows]
 

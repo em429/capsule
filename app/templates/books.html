@@ -39,7 +39,7 @@
         <div class="bg-white dark:bg-slate-800 p-4 rounded shadow">
             <a href="/book/{{ book.id }}"
                class="text-lg font-semibold text-sky-600 dark:text-sky-300 hover:underline">
-               {{ book.title }}
+               {{ book.book_title }}
             </a>
             <a href="{{ url_for('focused_view', book_id=book.id) }}"
                class="text-slate-500 hover:underline">
@@ -59,7 +59,7 @@
     {% for book in books %}
     <li>
         <a href="/book/{{ book.id }}" 
-           class="text-sky-600 dark:text-sky-300 hover:underline">{{ book.title }}</a>
+           class="text-sky-600 dark:text-sky-300 hover:underline">{{ book.book_title }}</a>
         <span class="text-slate-400">{{ book.annotation_count }}</span>
         <a href="{{ url_for('focused_view', book_id=book.id) }}"
            class="text-slate-500 hover:underline">focus</a>
