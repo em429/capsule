@@ -13,20 +13,12 @@
     {% endif %}
 
     <!-- text -->
-    <p class="text-slate-700 dark:text-sky-200">{{ annotation.text }}</p>
+    <p class="mb-2 text-slate-700 dark:text-sky-200">{{ annotation.text }}</p>
 
     <div class="flex justify-between items-center">
-        <div class="flex items-center">
-            <!-- timestamp -->
-            <span class="mt-1 mr-2 float-left text-sky-700 font-light">
-            {{ annotation.timestamp | float | to_datetime() }}
-            </span>
-
+        <div class="flex space-x-3 items-center">
             <!-- favorite button-->
             {{ svg_favorite(annotation) }}
-        </div>
-
-        <div class="flex space-x-4 items-center">
 
             <!-- open in epub-viewer button -->
             {{ svg_open_in_epub_viewer(annotation) }}
@@ -34,13 +26,18 @@
             {% if not request.path == '/focused' %}
                 {{ svg_focus(annotation) }}
             {% endif %}
-
+            <!-- timestamp -->
+            <span class="text-sm mr-2 float-left text-slate-400/70 dark:text-sky-900 font-light">
+                {{ annotation.timestamp | float | to_datetime() }}
+            </span>
+    
         </div>
+
     </div>
 {% endmacro %}
 
 {% macro svg_focus(annotation) %}
-    <a href="{{ url_for('focused_view', book_id=annotation.book_id) }}" class="text-sky-800">
+    <a href="{{ url_for('focused_view', book_id=annotation.book_id) }}" class="text-slate-400/70 dark:text-sky-900">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
         </svg>   
@@ -50,7 +47,7 @@
 
 {% macro svg_open_in_epub_viewer(annotation) %}
     <a href="calibre://view-book/books/{{ annotation.book_id }}/epub"
-    class="text-sky-800">
+    class="text-slate-400/70 dark:text-sky-900">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
         </svg>
@@ -60,9 +57,9 @@
 {% macro svg_favorite(annotation) %}
     <button class="
     {% if annotation.is_favorite %}
-    dark:fill-sky-500 dark:text-sky-500 fill-sky-700 text-sky-900
+    dark:fill-sky-500 dark:text-sky-500 fill-slate-400/30 text-slate-400/70
     {% else %}
-    dark:fill-sky-950 dark:text-sky-900 fill-slate-300 text-slate-400
+    fill-none dark:text-sky-900 text-slate-400/70
     {% endif %}"
     onclick="toggleFavorite({{ annotation.id }}, this)">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
