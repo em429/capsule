@@ -15,6 +15,13 @@
     <!-- text -->
     <p class="mb-2 text-slate-700 dark:text-sky-200">{{ annotation.text }}</p>
 
+    <!-- notes -->
+    {% if annotation.notes %}
+        <div class="flex justify-between space-x-3 p-2 mb-3 mt-3 bg-sky-100 dark:bg-sky-950 rounded border border-sky-200 dark:border-sky-900 shadow shadow-sky-200 dark:shadow-none">
+            <p class="text-sm text-sky-800 dark:text-sky-300">{{ annotation.notes }}</p>
+        </div>
+    {% endif %}
+
     <div class="flex justify-between items-center">
         <div class="flex space-x-3 items-center">
             <!-- favorite button-->
