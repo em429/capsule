@@ -42,6 +42,8 @@ BOOKS_DB_PATH=/path/to/calibre/metadata.db python3 app.py
 - [x] automatic dark mode
 - [x] flashback section
 - [x] open book in Calibre epub-viewer
+- [ ] display notes next to highlights, if any
+- [ ] page showing all highlights that have notes
 - [ ] jump to highlight location when opening with epub-viewer
 - [ ] use ajax for focused view to avoid full-page refresh
 - [ ] keyboard nav in focused view
