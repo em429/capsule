@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-from flask import current_app
+from flask import current_app, url_for
 
 def to_datetime(value, format="%Y-%m-%d %H:%M:%S"):
     return datetime.fromtimestamp(value).strftime(format)
@@ -34,3 +34,6 @@ def toggle_favorite(annotation_id):
     
     save_favorites(favorites)
     return True
+
+def generate_calibre_url(book_id, spine_index, start_cfi):
+    return f"calibre://view-book/books/{book_id}/EPUB?open_at=epubcfi(/{(spine_index + 1) * 2}{start_cfi})"

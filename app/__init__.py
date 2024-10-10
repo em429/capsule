@@ -9,11 +9,12 @@ from app.models import (
     get_recent_books,
     get_flashback_annotations
 )
-from app.utils import is_favorite, toggle_favorite, to_datetime
+from app.utils import is_favorite, toggle_favorite, to_datetime, generate_calibre_url
 
 app = Flask(__name__)
 app.config.from_object(Config)
 app.jinja_env.filters['to_datetime'] = to_datetime
+app.jinja_env.filters['generate_calibre_url'] = generate_calibre_url
 
 @app.route('/', methods=['GET'])
 def index():
