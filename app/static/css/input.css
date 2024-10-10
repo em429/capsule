@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .favorite-btn {
+        @apply fill-none text-slate-400/70 dark:text-sky-900;
+    }
+    .favorite-btn[data-is-favorite="true"] {
+        @apply fill-slate-400/30 dark:fill-sky-900;
+    }
+    .favorite-btn[data-is-favorite="false"] {
+        @apply fill-none;
+    }
+}

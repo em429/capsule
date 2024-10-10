@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Book Annotations{% endblock %}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
 </head>
 <body class="min-h-screen dark:bg-slate-900 bg-slate-100">
     <nav class="bg-sky-800 text-white">
@@ -27,9 +27,10 @@
         </a>
     </main>
     <script>
-        function toggleFavorite(annotationId, button) {
-            const isFavorited = button.classList.contains('dark:fill-sky-500') || button.classList.contains('fill-sky-500');
-            const action = isFavorited ? 'remove from' : 'add to';
+        function toggleFavorite(button) {
+            const annotationId = button.dataset.annotationId;
+            const isFavorite = button.dataset.isFavorite === 'true';
+            const action = isFavorite ? 'remove from' : 'add to';
             const confirmMessage = `Are you sure you want to ${action} favorites?`;
             
             if (confirm(confirmMessage)) {
@@ -37,20 +38,17 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // TODO: clean this up
-                            // Classes active when item is favorited:
-                            button.classList.toggle('dark:fill-sky-900');
-                            button.classList.toggle('dark:text-sky-900');
-                            button.classList.toggle('fill-slate-400/30')
-                            button.classList.toggle('text-slate-400/70')
-                            // Classes active when not favorited:
-                            button.classList.toggle('dark:text-sky-900');
-                            button.classList.toggle('text-slate-400/70')
-                            button.classList.toggle('fill-none')
+                            button.dataset.isFavorite = (!isFavorite).toString();
                         }
                     });
             }
         }
+
+        document.addEventListener('click', function(event) {
+            if (event.target.closest('.favorite-btn')) {
+                toggleFavorite(event.target.closest('.favorite-btn'));
+            }
+        });
     </script>
 </body>
 </html>
