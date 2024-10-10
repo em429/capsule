@@ -1,8 +1,16 @@
-## Capsule
+## Capsule for Calibre
 
-Small, Flask webapp for reviwing Calibre annotations (ebook-viewer). Annotations are presented in a variety of ways to aid recall and improve serendipity.
+Capsule is a webapp for encountering book highlights from the past. It can also aid with reviewing books deliberately.
 
-### Features:
+It's purpose is to aid recall and facilitate serendipity.
+
+I built Capsule because I wasn't reviewing any of my (4500+) highlights I made in my Calibre library. Lots of great insights, ideas, food for thought, mostly being slowly forgotten.
+
+The best way to use Capsule is to run it 24/7 on a server, and open it on your phone whenever you have a few mins. (great alternative to news, social media, etc.)
+
+I know solutions like Readwise exist; but I'd rather not lock my data and invest lots of time into a commercial, closed source webapp that could diseapper any day. Also, I'd rather have my highlights linked to the books they are in and to their exact location using epubcfi. Which is how Calibre stores things.
+
+### Main Features:
 
 - The frontpage displays 3 random annotations
 - The books page displays a list of all books with highlights, a 'flashback in time' seciton, and recent books
@@ -21,6 +29,19 @@ python3 -m venv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
 
-BOOKS_DB_PATH=/path/to/metadata.db python3 app.py
+BOOKS_DB_PATH=/path/to/calibre/metadata.db python3 app.py
 ```
 
+### Feature Roadmap
+
+- [x] ability to favorite highlights, favorites page
+- [x] timestamps, linked to focused view of hl
+- [x] annotation count next to book list items
+- [x] focused mode
+- [x] jump to focused view of book on click
+- [x] automatic dark mode
+- [x] flashback section
+- [x] open book in Calibre epub-viewer
+- [ ] jump to highlight location when opening with epub-viewer
+- [ ] use ajax for focused view to avoid full-page refresh
+- [ ] keyboard nav in focused view
