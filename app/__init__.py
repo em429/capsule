@@ -7,7 +7,8 @@ from app.models import (
     get_favorited_annotations,
     get_all_annotations,
     get_recent_books,
-    get_flashback_annotations
+    get_flashback_annotations,
+    get_highlights_with_notes
 )
 from app.utils import is_favorite, toggle_favorite, to_datetime, generate_calibre_url
 
@@ -91,3 +92,8 @@ def focused_view():
 def focus_annotation(annotation_id):
     book_id = request.args.get('book_id', type=int)
     return redirect(url_for('focused_view', book_id=book_id, annotation_id=annotation_id))
+
+@app.route('/highlights_with_notes', methods=['GET'])
+def highlights_with_notes():
+    annotations = get_highlights_with_notes()
+    return render_template('highlights_with_notes.html', annotations=annotations)

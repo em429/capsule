@@ -250,3 +250,44 @@ def get_flashback_annotations():
         "years_ago": years_ago,
         "books": flashback_books
     }
+
+def get_highlights_with_notes():
+    query = """
+    SELECT a.id, JSON_EXTRACT(a.annot_data, '$.highlighted_text') as highlighted_text,
+           JSON_EXTRACT(a.annot_data, '$.notes') as notes,
+           JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
+           JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           a.timestamp, b.id as book_id, b.title as book_title
+    FROM annotations a
+    JOIN books b ON a.book = b.id
+    WHERE JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
+      AND JSON_EXTRACT(a.annot_data, '$.notes') != ''
+    ORDER BY b.title, a.timestamp;
+    """
+    
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(query)
+        rows = cur.fetchall()
+    
+    highlights_with_notes = {}
+    
+    for row in rows:
+        book_id = row['book_id']
+        if book_id not in highlights_with_notes:
+            highlights_with_notes[book_id] = {
+                'book_title': row['book_title'],
+                'annotations': []
+            }
+        highlights_with_notes[book_id]['annotations'].append({
+            'id': row['id'],
+            'book_id': row['book_id'],
+            'text': row['highlighted_text'],
+            'notes': row['notes'],
+            'spine_index': row['spine_index'],
+            'start_cfi': row['start_cfi'],
+            'timestamp': row['timestamp'],
+            'is_favorite': is_favorite(row['id']),
+        })
+    
+    return highlights_with_notes
