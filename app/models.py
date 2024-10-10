@@ -2,22 +2,26 @@ import sqlite3
 from flask import current_app
 from datetime import datetime, timedelta
 import random
+import json
 
 from app.utils import is_favorite, toggle_favorite, load_favorites
 
 
 def get_db_connection():
-    # conn = sqlite3.connect(current_app.config['DB_PATH'])
     conn = sqlite3.connect(f'file:{current_app.config["DB_PATH"]}?mode=ro', uri=True)
     conn.row_factory = sqlite3.Row
     return conn
 
 def get_random_annotations():
     query = """
-    SELECT a.id, a.searchable_text, a.timestamp, b.title, b.id as book_id
+    SELECT a.id, JSON_EXTRACT(a.annot_data, '$.highlighted_text') as highlighted_text,
+           JSON_EXTRACT(a.annot_data, '$.notes') as notes,
+           JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
+           JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           a.timestamp, b.title, b.id as book_id
     FROM annotations a
     JOIN books b ON a.book = b.id
-    WHERE a.searchable_text != ''
+    WHERE JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
     ORDER BY RANDOM()
     LIMIT 3;
     """
@@ -29,7 +33,10 @@ def get_random_annotations():
     
     return [{
         "id": row["id"],
-        "text": row["searchable_text"], 
+        "text": row["highlighted_text"], 
+        "notes": row["notes"],
+        "spine_index": row["spine_index"],
+        "start_cfi": row["start_cfi"],
         "book_title": row["title"], 
         "book_id": row["book_id"],
         "timestamp": row["timestamp"]
@@ -40,7 +47,7 @@ def get_books_with_annotations():
     SELECT b.id, b.title, COUNT(a.id) AS annotation_count
     FROM books b
     JOIN annotations a ON a.book = b.id
-    WHERE a.searchable_text != ''
+    WHERE JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
     GROUP BY b.id, b.title
     ORDER BY b.title;
     """
@@ -55,11 +62,15 @@ def get_books_with_annotations():
 
 def get_book_annotations(book_id):
     query = """
-    SELECT a.id, a.searchable_text, a.timestamp, b.title, b.id as book_id,
+    SELECT a.id, JSON_EXTRACT(a.annot_data, '$.highlighted_text') as highlighted_text,
+           JSON_EXTRACT(a.annot_data, '$.notes') as notes,
+           JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
+           JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           a.timestamp, b.title, b.id as book_id,
            ROW_NUMBER() OVER (ORDER BY a.timestamp) - 1 as row_index
     FROM annotations a
     JOIN books b ON a.book = b.id
-    WHERE a.book = ? AND a.searchable_text != ''
+    WHERE a.book = ? AND JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
     ORDER BY a.timestamp;
     """
     
@@ -78,7 +89,10 @@ def get_book_annotations(book_id):
             "book_title": rows[0]["title"],
             "book_id": rows[0]["book_id"],
             "id": row["id"],
-            "text": row["searchable_text"],
+            "text": row["highlighted_text"],
+            "notes": row["notes"],
+            "spine_index": row["spine_index"],
+            "start_cfi": row["start_cfi"],
             "timestamp": row["timestamp"],
             "row_index": row["row_index"]
         } for row in rows]
@@ -86,10 +100,14 @@ def get_book_annotations(book_id):
 
 def get_favorited_annotations():
     query = """
-    SELECT a.id, a.searchable_text, a.timestamp, b.id as book_id, b.title as book_title
+    SELECT a.id, JSON_EXTRACT(a.annot_data, '$.highlighted_text') as highlighted_text,
+           JSON_EXTRACT(a.annot_data, '$.notes') as notes,
+           JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
+           JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           a.timestamp, b.id as book_id, b.title as book_title
     FROM annotations a
     JOIN books b ON a.book = b.id
-    WHERE a.searchable_text != ''
+    WHERE JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
     ORDER BY b.title, a.timestamp;
     """
     
@@ -112,7 +130,10 @@ def get_favorited_annotations():
             favorited_annotations[book_id]['annotations'].append({
                 'id': row['id'],
                 'book_id': row['book_id'],
-                'text': row['searchable_text'],
+                'text': row['highlighted_text'],
+                'notes': row['notes'],
+                'spine_index': row['spine_index'],
+                'start_cfi': row['start_cfi'],
                 'timestamp': row['timestamp'],
                 'is_favorite': True,
             })
@@ -121,11 +142,15 @@ def get_favorited_annotations():
 
 def get_all_annotations():
     query = """
-    SELECT a.id, a.searchable_text, a.timestamp, b.id as book_id, b.title as book_title,
+    SELECT a.id, JSON_EXTRACT(a.annot_data, '$.highlighted_text') as highlighted_text,
+           JSON_EXTRACT(a.annot_data, '$.notes') as notes,
+           JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
+           JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           a.timestamp, b.id as book_id, b.title as book_title,
            ROW_NUMBER() OVER (ORDER BY a.timestamp DESC, b.title) - 1 as row_index
     FROM annotations a
     JOIN books b ON a.book = b.id
-    WHERE a.searchable_text != ''
+    WHERE JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
     ORDER BY a.timestamp DESC, b.title;
     """
     
@@ -136,7 +161,10 @@ def get_all_annotations():
     
     return [{
         "id": row["id"],
-        "text": row["searchable_text"],
+        "text": row["highlighted_text"],
+        "notes": row["notes"],
+        "spine_index": row["spine_index"],
+        "start_cfi": row["start_cfi"],
         "timestamp": row["timestamp"],
         "book_id": row["book_id"],
         "book_title": row["book_title"],
@@ -155,7 +183,7 @@ def get_recent_books():
             books b
             JOIN annotations a ON b.id = a.book
         WHERE 
-            a.searchable_text != ''
+            JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
         GROUP BY 
             b.id, b.title
     )
@@ -183,10 +211,15 @@ def get_flashback_annotations():
     date_range = 10  # Days before and after the target date
 
     query = """
-    SELECT DISTINCT b.id as book_id, b.title as book_title, a.id as annotation_id, a.searchable_text, a.timestamp
+    SELECT DISTINCT b.id as book_id, b.title as book_title, a.id as annotation_id,
+           JSON_EXTRACT(a.annot_data, '$.highlighted_text') as highlighted_text,
+           JSON_EXTRACT(a.annot_data, '$.notes') as notes,
+           JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
+           JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           a.timestamp
     FROM annotations a
     JOIN books b ON a.book = b.id
-    WHERE a.searchable_text != ''
+    WHERE JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
       AND a.timestamp BETWEEN ? AND ?
     ORDER BY RANDOM()
     LIMIT 1;
@@ -206,7 +239,10 @@ def get_flashback_annotations():
             "book_id": row["book_id"],
             "book_title": row["book_title"],
             "annotation_id": row["annotation_id"],
-            "text": row["searchable_text"],
+            "text": row["highlighted_text"],
+            "notes": row["notes"],
+            "spine_index": row["spine_index"],
+            "start_cfi": row["start_cfi"],
             "timestamp": row["timestamp"]
         })
 
