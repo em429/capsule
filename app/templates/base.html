@@ -9,12 +9,12 @@
     <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
 </head>
 <body class="min-h-screen dark:bg-slate-900 bg-slate-100">
-    <nav class="bg-sky-800 text-white">
+    <nav class="dark:bg-sky-950 bg-sky-800 dark:text-sky-200 text-sky-50">
         <div class="px-5 max-w-2xl space-x-4 flex container justify-end items-center">
-            <a href="/" class="text-sky-50">random</a>
-            <a href="/books" class="text-sky-50 hover:underline">books</a>
-            <a href="/favorites" class="text-sky-50 hover:underline">favorites</a>
-            <a href="{{ url_for('focused_view') }}" class="text-sky-50 hover:underline">
+            <a href="/" class="hover:underline">random</a>
+            <a href="/books" class="hover:underline">books</a>
+            <a href="/favorites" class="hover:underline">favorites</a>
+            <a href="{{ url_for('focused_view') }}" class="hover:underline">
                 focused</a>
         </div>
     </nav>
