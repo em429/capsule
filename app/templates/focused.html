@@ -4,26 +4,21 @@
 
 {% block content %}
 
-<div class="mb-3 flex justify-between items-center text-sky-900 dark:text-sky-900">
+<div class="mb-5 flex justify-center sm:justify-end space-x-4 items-center text-sm text-slate-400/70 dark:text-sky-900">
     <a href="{{ url_for('focused_view', book_id=book_id, index=0) }}"
-       class="font-bold" id="first-link"><< First</a>
+       class="font-bold" id="first-link"><< first</a>
     <a href="{{ url_for('focused_view', book_id=book_id, index=index-1) }}"
-       class="font-bold" id="prev-link">< Previous</a>
+       class="font-bold" id="prev-link">< prev</a>
     <span class="">{{ index + 1 }} / {{ total }}</span>
     <a href="{{ url_for('focused_view', book_id=book_id, index=index+1) }}"
-       class="font-bold" id="next-link">Next ></a>
+       class="font-bold" id="next-link">next ></a>
     <a href="{{ url_for('focused_view', book_id=book_id, index=total-1) }}"
-       class="font-bold" id="last-link">Last >></a>
+       class="font-bold" id="last-link">last >></a>
 </div>
 
-<div class="pb-4 mb-6">
+
+<div class="pb-4">
     {{highlight_component(annotation)}}
-</div>
-
-<div class="flex text-sky-900 dark:text-sky-500 space-x-2 justify-center mt-4">
-    <a href="{{ url_for('focused_view') }}" class="hover:underline">View all highlights</a>
-    <span class=""> | </span>
-    <a href="{{ url_for('books_list') }}" class="hover:underline">Select a book</a>
 </div>
 
 <script>
