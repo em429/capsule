@@ -4,24 +4,37 @@
 
 {% block content %}
 
+<div class="mb-3 flex justify-between items-center text-sky-900 dark:text-sky-900">
+    <a href="{{ url_for('focused_view', book_id=book_id, index=0) }}"
+       class="font-bold" id="first-link"><< First</a>
+    <a href="{{ url_for('focused_view', book_id=book_id, index=index-1) }}"
+       class="font-bold" id="prev-link">< Previous</a>
+    <span class="">{{ index + 1 }} / {{ total }}</span>
+    <a href="{{ url_for('focused_view', book_id=book_id, index=index+1) }}"
+       class="font-bold" id="next-link">Next ></a>
+    <a href="{{ url_for('focused_view', book_id=book_id, index=total-1) }}"
+       class="font-bold" id="last-link">Last >></a>
+</div>
+
 <div class="pb-4 mb-6">
     {{highlight_component(annotation)}}
 </div>
 
-<div class="flex justify-between items-center text-sky-900 dark:text-sky-400">
-    <a href="{{ url_for('focused_view', book_id=book_id, index=0) }}"
-       class="font-bold"><< First</a>
-    <a href="{{ url_for('focused_view', book_id=book_id, index=index-1) }}"
-       class="font-bold">< Previous</a>
-    <span class="">{{ index + 1 }} / {{ total }}</span>
-    <a href="{{ url_for('focused_view', book_id=book_id, index=index+1) }}"
-       class="font-bold">Next ></a>
-    <a href="{{ url_for('focused_view', book_id=book_id, index=total-1) }}"
-       class="font-bold">Last >></a>
-</div>
 <div class="flex text-sky-900 dark:text-sky-500 space-x-2 justify-center mt-4">
     <a href="{{ url_for('focused_view') }}" class="hover:underline">View all highlights</a>
     <span class=""> | </span>
     <a href="{{ url_for('books_list') }}" class="hover:underline">Select a book</a>
 </div>
+
+<script>
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            document.getElementById('prev-link').click();
+        } else if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            document.getElementById('next-link').click();
+        }
+    });
+</script>
 {% endblock %}
