@@ -4,21 +4,30 @@
 
 {% block content %}
 
-<div class="mb-5 flex justify-center sm:justify-end space-x-4 items-center text-sm text-slate-400/70 dark:text-sky-900">
-    <a href="{{ url_for('focused_view', book_id=book_id, index=0) }}"
-       class="font-bold" id="first-link"><< first</a>
-    <a href="{{ url_for('focused_view', book_id=book_id, index=index-1) }}"
-       class="font-bold" id="prev-link">< prev</a>
-    <span class="">{{ index + 1 }} / {{ total }}</span>
-    <a href="{{ url_for('focused_view', book_id=book_id, index=index+1) }}"
-       class="font-bold" id="next-link">next ></a>
-    <a href="{{ url_for('focused_view', book_id=book_id, index=total-1) }}"
-       class="font-bold" id="last-link">last >></a>
-</div>
-
-
 <div class="pb-4">
     {{highlight_component(annotation)}}
+</div>
+
+<div class="p-2 fixed bottom-0 right-0 left-0 flex justify-center sm:justify-start space-x-4 items-center text-sm dark:bg-sky-950 bg-sky-800 dark:text-sky-200 text-sky-50">
+    <a href="{{ url_for('focused_view', book_id=book_id, index=0) }}"
+       class=" dark:border-sky-600  font-bold flex items-center justify-center w-10 h-10" id="first-link">
+        {{ svg_double_chevron_left() }}
+    </a>
+    <a href="{{ url_for('focused_view', book_id=book_id, index=index-1) }}"
+       class=" dark:border-sky-600  font-bold flex items-center justify-center w-10 h-10" id="prev-link">
+        {{ svg_chevron_left() }}
+    </a>
+    <div class=" dark:border-sky-600  flex items-center font-light justify-center w-20 h-10">
+        <span>{{ index + 1 }} / {{ total }}</span>
+    </div>
+    <a href="{{ url_for('focused_view', book_id=book_id, index=index+1) }}"
+       class=" dark:border-sky-600  font-bold flex items-center justify-center w-10 h-10" id="next-link">
+        {{ svg_chevron_right() }}
+    </a>
+    <a href="{{ url_for('focused_view', book_id=book_id, index=total-1) }}"
+       class=" dark:border-sky-600  font-bold flex items-center justify-center w-10 h-10" id="last-link">
+        {{ svg_double_chevron_right() }}
+    </a>
 </div>
 
 <script>
@@ -33,3 +42,27 @@
     });
 </script>
 {% endblock %}
+
+{% macro svg_chevron_left() %}
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+{% endmacro %}
+
+{% macro svg_chevron_right() %}
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+    </svg>
+{% endmacro %}
+
+{% macro svg_double_chevron_left() %}
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+    </svg>
+{% endmacro %}
+
+{% macro svg_double_chevron_right() %}
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+    </svg>
+{% endmacro %}
