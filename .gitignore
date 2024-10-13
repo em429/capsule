@@ -5,3 +5,4 @@ deploy.sh
 __pycache__
 node_modules
 **/**/css/output.css
+.vscode
