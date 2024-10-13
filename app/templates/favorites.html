@@ -1,25 +1,22 @@
 {% extends "base.html" %}
-
 {% block title %}Favorite Annotations{% endblock %}
-
 {% block content %}
 <div class="space-y-8">
-    {% for book_id, book_data in favorited_annotations.items() %}
-    <div class="book-section">
-        <h2 class="mb-4 text-2xl font-semibold text-sky-600 dark:text-sky-400">
-            <a href="/book/{{ book_id }}" class="hover:underline">
-                {{ book_data.book_title }}</a>
-        </h2>
-        <div class="space-y-4">
-            {% for annotation in book_data.annotations %}
-            <div class="">
-                {{highlight_component(annotation, show_title=False)}}
-            </div>
-            {% endfor %}
-        </div>
+  {% for book_id, book_data in favorited_annotations.items() %}
+  <div class="book-section">
+    <h2 class="mb-4 text-2xl font-semibold text-sky-600 dark:text-sky-400">
+      <a href="/book/{{ book_id }}" class="hover:underline">
+        {{ book_data.book_title }}</a
+      >
+    </h2>
+    <div class="space-y-4">
+      {% for annotation in book_data.annotations %}
+      <div class="">{{highlight_component(annotation, show_title=False)}}</div>
+      {% endfor %}
     </div>
-    {% else %}
-    <p class="text-slate-700">No favorite annotations yet.</p>
-    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-slate-700">No favorite annotations yet.</p>
+  {% endfor %}
 </div>
 {% endblock %}
