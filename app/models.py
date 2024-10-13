@@ -12,6 +12,7 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+
 def get_random_annotations():
     query = """
     SELECT a.id, JSON_EXTRACT(a.annot_data, '$.highlighted_text') as highlighted_text,
@@ -26,23 +27,27 @@ def get_random_annotations():
     ORDER BY RANDOM()
     LIMIT 3;
     """
-    
+
     with get_db_connection() as conn:
         cur = conn.cursor()
         cur.execute(query)
         rows = cur.fetchall()
 
-    return [{
-        "id": row["id"],
-        "text": row["highlighted_text"], 
-        "notes": row["notes"],
-        "spine_index": row["spine_index"],
-        "start_cfi": row["start_cfi"],
-        "book_title": row["title"], 
-        "book_id": row["book_id"],
-        "timestamp": row["timestamp"],
-        "chapter_name": chapter_array_to_str(row['chapter_array'])
-    } for row in rows]
+    return [
+        {
+            "id": row["id"],
+            "text": row["highlighted_text"],
+            "notes": row["notes"],
+            "spine_index": row["spine_index"],
+            "start_cfi": row["start_cfi"],
+            "book_title": row["title"],
+            "book_id": row["book_id"],
+            "timestamp": row["timestamp"],
+            "chapter_name": chapter_array_to_str(row["chapter_array"]),
+        }
+        for row in rows
+    ]
+
 
 def get_books_with_annotations():
     query = """
@@ -53,13 +58,20 @@ def get_books_with_annotations():
     GROUP BY b.id, b.title
     ORDER BY b.title;
     """
-    
+
     with get_db_connection() as conn:
         cur = conn.cursor()
         cur.execute(query)
         rows = cur.fetchall()
-    
-    return [{"book_id": row["id"], "book_title": row["title"], "annotation_count": row["annotation_count"]} for row in rows]
+
+    return [
+        {
+            "book_id": row["id"],
+            "book_title": row["title"],
+            "annotation_count": row["annotation_count"],
+        }
+        for row in rows
+    ]
 
 
 def get_book_annotations(book_id):
@@ -76,31 +88,35 @@ def get_book_annotations(book_id):
     WHERE a.book = ? AND JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
     ORDER BY a.timestamp;
     """
-    
+
     with get_db_connection() as conn:
         cur = conn.cursor()
         cur.execute(query, (book_id,))
         rows = cur.fetchall()
-    
+
     if not rows:
         return None
-    
+
     return {
         "book_title": rows[0]["title"],
         "book_id": rows[0]["book_id"],
-        "annotations": [{
-            "book_title": rows[0]["title"],
-            "book_id": rows[0]["book_id"],
-            "id": row["id"],
-            "text": row["highlighted_text"],
-            "notes": row["notes"],
-            "spine_index": row["spine_index"],
-            "start_cfi": row["start_cfi"],
-            "timestamp": row["timestamp"],
-            "row_index": row["row_index"],
-            "chapter_name": chapter_array_to_str(row['chapter_array'])
-        } for row in rows]
+        "annotations": [
+            {
+                "book_title": rows[0]["title"],
+                "book_id": rows[0]["book_id"],
+                "id": row["id"],
+                "text": row["highlighted_text"],
+                "notes": row["notes"],
+                "spine_index": row["spine_index"],
+                "start_cfi": row["start_cfi"],
+                "timestamp": row["timestamp"],
+                "row_index": row["row_index"],
+                "chapter_name": chapter_array_to_str(row["chapter_array"]),
+            }
+            for row in rows
+        ],
     }
+
 
 def get_favorited_annotations():
     query = """
@@ -115,36 +131,39 @@ def get_favorited_annotations():
     WHERE JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
     ORDER BY b.title, a.timestamp;
     """
-    
+
     with get_db_connection() as conn:
         cur = conn.cursor()
         cur.execute(query)
         rows = cur.fetchall()
-    
+
     favorites = load_favorites()
     favorited_annotations = {}
-    
+
     for row in rows:
-        if str(row['id']) in favorites:
-            book_id = row['book_id']
+        if str(row["id"]) in favorites:
+            book_id = row["book_id"]
             if book_id not in favorited_annotations:
                 favorited_annotations[book_id] = {
-                    'book_title': row['book_title'],
-                    'annotations': []
+                    "book_title": row["book_title"],
+                    "annotations": [],
                 }
-            favorited_annotations[book_id]['annotations'].append({
-                'id': row['id'],
-                'book_id': row['book_id'],
-                'text': row['highlighted_text'],
-                'notes': row['notes'],
-                'spine_index': row['spine_index'],
-                'start_cfi': row['start_cfi'],
-                'timestamp': row['timestamp'],
-                'is_favorite': True,
-                 "chapter_name": chapter_array_to_str(row['chapter_array'])
-            })
-    
+            favorited_annotations[book_id]["annotations"].append(
+                {
+                    "id": row["id"],
+                    "book_id": row["book_id"],
+                    "text": row["highlighted_text"],
+                    "notes": row["notes"],
+                    "spine_index": row["spine_index"],
+                    "start_cfi": row["start_cfi"],
+                    "timestamp": row["timestamp"],
+                    "is_favorite": True,
+                    "chapter_name": chapter_array_to_str(row["chapter_array"]),
+                }
+            )
+
     return favorited_annotations
+
 
 def get_all_annotations():
     query = """
@@ -160,24 +179,28 @@ def get_all_annotations():
     WHERE JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
     ORDER BY a.timestamp DESC, b.title;
     """
-    
+
     with get_db_connection() as conn:
         cur = conn.cursor()
         cur.execute(query)
         rows = cur.fetchall()
-    
-    return [{
-        "id": row["id"],
-        "text": row["highlighted_text"],
-        "notes": row["notes"],
-        "spine_index": row["spine_index"],
-        "start_cfi": row["start_cfi"],
-        "timestamp": row["timestamp"],
-        "book_id": row["book_id"],
-        "book_title": row["book_title"],
-        "row_index": row["row_index"],
-        "chapter_name": chapter_array_to_str(row['chapter_array'])
-    } for row in rows]
+
+    return [
+        {
+            "id": row["id"],
+            "text": row["highlighted_text"],
+            "notes": row["notes"],
+            "spine_index": row["spine_index"],
+            "start_cfi": row["start_cfi"],
+            "timestamp": row["timestamp"],
+            "book_id": row["book_id"],
+            "book_title": row["book_title"],
+            "row_index": row["row_index"],
+            "chapter_name": chapter_array_to_str(row["chapter_array"]),
+        }
+        for row in rows
+    ]
+
 
 def get_recent_books():
     query = """
@@ -200,17 +223,21 @@ def get_recent_books():
     WHERE rank <= 3
     ORDER BY latest_annotation DESC;
     """
-    
+
     with get_db_connection() as conn:
         cur = conn.cursor()
         cur.execute(query)
         rows = cur.fetchall()
-    
-    return [{
-        "book_id": row["book_id"],
-        "book_title": row["book_title"],
-        "latest_annotation": row["latest_annotation"]
-    } for row in rows]
+
+    return [
+        {
+            "book_id": row["book_id"],
+            "book_title": row["book_title"],
+            "latest_annotation": row["latest_annotation"],
+        }
+        for row in rows
+    ]
+
 
 def get_flashback_annotations():
     years_ago = random.choice([1, 2, 3])
@@ -244,22 +271,22 @@ def get_flashback_annotations():
 
     flashback_books = []
     for row in rows:
-        flashback_books.append({
-            "book_id": row["book_id"],
-            "book_title": row["book_title"],
-            "annotation_id": row["annotation_id"],
-            "text": row["highlighted_text"],
-            "notes": row["notes"],
-            "spine_index": row["spine_index"],
-            "start_cfi": row["start_cfi"],
-            "timestamp": row["timestamp"],
-            "chapter_name": chapter_array_to_str(row['chapter_array'])
-        })
+        flashback_books.append(
+            {
+                "book_id": row["book_id"],
+                "book_title": row["book_title"],
+                "annotation_id": row["annotation_id"],
+                "text": row["highlighted_text"],
+                "notes": row["notes"],
+                "spine_index": row["spine_index"],
+                "start_cfi": row["start_cfi"],
+                "timestamp": row["timestamp"],
+                "chapter_name": chapter_array_to_str(row["chapter_array"]),
+            }
+        )
 
-    return {
-        "years_ago": years_ago,
-        "books": flashback_books
-    }
+    return {"years_ago": years_ago, "books": flashback_books}
+
 
 def get_highlights_with_notes():
     query = """
@@ -275,32 +302,33 @@ def get_highlights_with_notes():
       AND JSON_EXTRACT(a.annot_data, '$.notes') != ''
     ORDER BY b.title, a.timestamp;
     """
-    
+
     with get_db_connection() as conn:
         cur = conn.cursor()
         cur.execute(query)
         rows = cur.fetchall()
-    
+
     highlights_with_notes = {}
-    
+
     for row in rows:
-        book_id = row['book_id']
+        book_id = row["book_id"]
         if book_id not in highlights_with_notes:
             highlights_with_notes[book_id] = {
-                'book_title': row['book_title'],
-                'annotations': []
+                "book_title": row["book_title"],
+                "annotations": [],
             }
-        highlights_with_notes[book_id]['annotations'].append({
-            'id': row['id'],
-            'book_id': row['book_id'],
-            'text': row['highlighted_text'],
-            'notes': row['notes'],
-            'spine_index': row['spine_index'],
-            'start_cfi': row['start_cfi'],
-            'timestamp': row['timestamp'],
-            'is_favorite': is_favorite(row['id']),
-            "chapter_name": chapter_array_to_str(row['chapter_array'])
+        highlights_with_notes[book_id]["annotations"].append(
+            {
+                "id": row["id"],
+                "book_id": row["book_id"],
+                "text": row["highlighted_text"],
+                "notes": row["notes"],
+                "spine_index": row["spine_index"],
+                "start_cfi": row["start_cfi"],
+                "timestamp": row["timestamp"],
+                "is_favorite": is_favorite(row["id"]),
+                "chapter_name": chapter_array_to_str(row["chapter_array"]),
+            }
+        )
 
-        })
-    
     return highlights_with_notes
