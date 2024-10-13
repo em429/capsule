@@ -8,25 +8,25 @@
     {{highlight_component(annotation)}}
 </div>
 
-<div class="p-2 fixed bottom-0 right-0 left-0 text-sm dark:bg-sky-950 bg-sky-800 dark:text-sky-200 text-sky-50">
-    <div class="max-w-2xl flex justify-between">
+<div class="fixed right-0 bottom-0 left-0 p-2 text-sm text-sky-50 bg-sky-800 dark:bg-sky-950 dark:text-sky-200">
+    <div class="flex justify-between max-w-2xl">
         <a href="{{ url_for('focused_view', book_id=book_id, index=0) }}"
-        class=" dark:border-sky-600  font-bold flex items-center justify-center w-20 h-10" id="first-link">
+        class="flex justify-center items-center w-20 h-10 font-bold dark:border-sky-600" id="first-link">
             {{ svg_double_chevron_left() }}
         </a>
         <a href="{{ url_for('focused_view', book_id=book_id, index=index-1) }}"
-        class=" dark:border-sky-600  font-bold flex items-center justify-center w-20 h-10" id="prev-link">
+        class="flex justify-center items-center w-20 h-10 font-bold dark:border-sky-600" id="prev-link">
             {{ svg_chevron_left() }}
         </a>
-        <div class=" dark:border-sky-600  flex items-center font-light justify-center w-20 h-10">
+        <div class="flex justify-center items-center w-20 h-10 font-light dark:border-sky-600">
             <span>{{ index + 1 }} / {{ total }}</span>
         </div>
         <a href="{{ url_for('focused_view', book_id=book_id, index=index+1) }}"
-        class=" dark:border-sky-600  font-bold flex items-center justify-center w-20 h-10" id="next-link">
+        class="flex justify-center items-center w-20 h-10 font-bold dark:border-sky-600" id="next-link">
             {{ svg_chevron_right() }}
         </a>
         <a href="{{ url_for('focused_view', book_id=book_id, index=total-1) }}"
-        class=" dark:border-sky-600  font-bold flex items-center justify-center w-20 h-10" id="last-link">
+        class="flex justify-center items-center w-20 h-10 font-bold dark:border-sky-600" id="last-link">
             {{ svg_double_chevron_right() }}
         </a>
     </div>

@@ -2,9 +2,9 @@
 
     <!-- title -->
     {% if show_title %}
-        <div class="flex container justify-between items-baseline">
+        <div class="container flex justify-between items-baseline">
             <a href="/book/{{ annotation.book_id }}"
-                class="text-xl mb-1 font-semibold text-sky-600 dark:text-sky-400 hover:underline">
+                class="mb-1 text-xl font-semibold text-sky-600 dark:text-sky-400 hover:underline">
                 {{ annotation.book_title }}
             </a>
         </div>
@@ -16,17 +16,17 @@
     </p>
 
     <!-- text (toggles chapter name on click) -->
-    <p class="mb-2 text-slate-700 dark:text-sky-200 cursor-pointer" onclick="toggleChapterName(this)">{{ annotation.text }}</p>
+    <p class="mb-2 cursor-pointer text-slate-700 dark:text-sky-200" onclick="toggleChapterName(this)">{{ annotation.text }}</p>
 
     <!-- notes -->
     {% if annotation.notes %}
-        <div class="flex justify-between space-x-3 p-2 mb-3 mt-3 bg-sky-100 dark:bg-sky-950 rounded border border-sky-200 dark:border-sky-900 shadow shadow-sky-200 dark:shadow-none">
+        <div class="flex justify-between p-2 mt-3 mb-3 space-x-3 bg-sky-100 rounded border border-sky-200 shadow dark:bg-sky-950 dark:border-sky-900 shadow-sky-200 dark:shadow-none">
             <p class="text-sm text-sky-800 dark:text-sky-300">{{ annotation.notes }}</p>
         </div>
     {% endif %}
 
     <div class="flex justify-between items-center">
-        <div class="flex space-x-3 items-center">
+        <div class="flex items-center space-x-3">
             <!-- favorite button-->
             {{ svg_favorite(annotation) }}
 
@@ -35,7 +35,7 @@
 
             <!-- timestamp -->
             <a href="{{ url_for('focus_annotation', annotation_id=annotation.id, book_id=annotation.book_id) }}"
-                class="text-sm mr-2 float-left text-slate-400/70 dark:text-sky-900 font-light">
+                class="float-left mr-2 text-sm font-light text-slate-400/70 dark:text-sky-900">
                 {{ annotation.timestamp | float | to_datetime() }}
             </a>
         </div>
