@@ -51,6 +51,19 @@
                 toggleFavorite(event.target.closest('.favorite-btn'));
             }
         });
+
+        function toggleChapterName(element) {
+            const chapterNameElement = element.previousElementSibling;
+            if (chapterNameElement && chapterNameElement.hasAttribute('data-chapter-name')) {
+                if (chapterNameElement.classList.contains('hidden')) {
+                    chapterNameElement.classList.remove('hidden');
+                    chapterNameElement.classList.add('block');
+                } else {
+                    chapterNameElement.classList.remove('block');
+                    chapterNameElement.classList.add('hidden');
+                }
+            }
+        }
     </script>
 </body>
 </html>

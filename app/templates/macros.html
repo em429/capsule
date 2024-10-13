@@ -3,17 +3,20 @@
     <!-- title -->
     {% if show_title %}
         <div class="flex container justify-between items-baseline">
-
             <a href="/book/{{ annotation.book_id }}"
                 class="text-xl mb-1 font-semibold text-sky-600 dark:text-sky-400 hover:underline">
                 {{ annotation.book_title }}
             </a>
-
         </div>
     {% endif %}
 
-    <!-- text -->
-    <p class="mb-2 text-slate-700 dark:text-sky-200">{{ annotation.text }}</p>
+    <!-- chapter name (hidden by default) -->
+    <p class="hidden mb-2 text-sm text-slate-500 dark:text-sky-300" data-chapter-name>
+        {{ annotation.chapter_name }}
+    </p>
+
+    <!-- text (toggles chapter name on click) -->
+    <p class="mb-2 text-slate-700 dark:text-sky-200 cursor-pointer" onclick="toggleChapterName(this)">{{ annotation.text }}</p>
 
     <!-- notes -->
     {% if annotation.notes %}
@@ -35,9 +38,7 @@
                 class="text-sm mr-2 float-left text-slate-400/70 dark:text-sky-900 font-light">
                 {{ annotation.timestamp | float | to_datetime() }}
             </a>
-    
         </div>
-
     </div>
 {% endmacro %}
 

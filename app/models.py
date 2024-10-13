@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import random
 import json
 
-from app.utils import is_favorite, toggle_favorite, load_favorites
+from app.utils import is_favorite, toggle_favorite, load_favorites, chapter_array_to_str
 
 
 def get_db_connection():
@@ -18,6 +18,7 @@ def get_random_annotations():
            JSON_EXTRACT(a.annot_data, '$.notes') as notes,
            JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
            JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           JSON_EXTRACT(a.annot_data, '$.toc_family_titles') as chapter_array,
            a.timestamp, b.title, b.id as book_id
     FROM annotations a
     JOIN books b ON a.book = b.id
@@ -30,7 +31,7 @@ def get_random_annotations():
         cur = conn.cursor()
         cur.execute(query)
         rows = cur.fetchall()
-    
+
     return [{
         "id": row["id"],
         "text": row["highlighted_text"], 
@@ -39,7 +40,8 @@ def get_random_annotations():
         "start_cfi": row["start_cfi"],
         "book_title": row["title"], 
         "book_id": row["book_id"],
-        "timestamp": row["timestamp"]
+        "timestamp": row["timestamp"],
+        "chapter_name": chapter_array_to_str(row['chapter_array'])
     } for row in rows]
 
 def get_books_with_annotations():
@@ -66,6 +68,7 @@ def get_book_annotations(book_id):
            JSON_EXTRACT(a.annot_data, '$.notes') as notes,
            JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
            JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           JSON_EXTRACT(a.annot_data, '$.toc_family_titles') as chapter_array,
            a.timestamp, b.title, b.id as book_id,
            ROW_NUMBER() OVER (ORDER BY a.timestamp) - 1 as row_index
     FROM annotations a
@@ -94,7 +97,8 @@ def get_book_annotations(book_id):
             "spine_index": row["spine_index"],
             "start_cfi": row["start_cfi"],
             "timestamp": row["timestamp"],
-            "row_index": row["row_index"]
+            "row_index": row["row_index"],
+            "chapter_name": chapter_array_to_str(row['chapter_array'])
         } for row in rows]
     }
 
@@ -104,6 +108,7 @@ def get_favorited_annotations():
            JSON_EXTRACT(a.annot_data, '$.notes') as notes,
            JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
            JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           JSON_EXTRACT(a.annot_data, '$.toc_family_titles') as chapter_array,
            a.timestamp, b.id as book_id, b.title as book_title
     FROM annotations a
     JOIN books b ON a.book = b.id
@@ -136,6 +141,7 @@ def get_favorited_annotations():
                 'start_cfi': row['start_cfi'],
                 'timestamp': row['timestamp'],
                 'is_favorite': True,
+                 "chapter_name": chapter_array_to_str(row['chapter_array'])
             })
     
     return favorited_annotations
@@ -146,6 +152,7 @@ def get_all_annotations():
            JSON_EXTRACT(a.annot_data, '$.notes') as notes,
            JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
            JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           JSON_EXTRACT(a.annot_data, '$.toc_family_titles') as chapter_array,
            a.timestamp, b.id as book_id, b.title as book_title,
            ROW_NUMBER() OVER (ORDER BY a.timestamp DESC, b.title) - 1 as row_index
     FROM annotations a
@@ -168,7 +175,8 @@ def get_all_annotations():
         "timestamp": row["timestamp"],
         "book_id": row["book_id"],
         "book_title": row["book_title"],
-        "row_index": row["row_index"]
+        "row_index": row["row_index"],
+        "chapter_name": chapter_array_to_str(row['chapter_array'])
     } for row in rows]
 
 def get_recent_books():
@@ -216,6 +224,7 @@ def get_flashback_annotations():
            JSON_EXTRACT(a.annot_data, '$.notes') as notes,
            JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
            JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           JSON_EXTRACT(a.annot_data, '$.toc_family_titles') as chapter_array,
            a.timestamp
     FROM annotations a
     JOIN books b ON a.book = b.id
@@ -243,7 +252,8 @@ def get_flashback_annotations():
             "notes": row["notes"],
             "spine_index": row["spine_index"],
             "start_cfi": row["start_cfi"],
-            "timestamp": row["timestamp"]
+            "timestamp": row["timestamp"],
+            "chapter_name": chapter_array_to_str(row['chapter_array'])
         })
 
     return {
@@ -257,6 +267,7 @@ def get_highlights_with_notes():
            JSON_EXTRACT(a.annot_data, '$.notes') as notes,
            JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
            JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
+           JSON_EXTRACT(a.annot_data, '$.toc_family_titles') as chapter_array,
            a.timestamp, b.id as book_id, b.title as book_title
     FROM annotations a
     JOIN books b ON a.book = b.id
@@ -288,6 +299,8 @@ def get_highlights_with_notes():
             'start_cfi': row['start_cfi'],
             'timestamp': row['timestamp'],
             'is_favorite': is_favorite(row['id']),
+            "chapter_name": chapter_array_to_str(row['chapter_array'])
+
         })
     
     return highlights_with_notes

@@ -37,3 +37,7 @@ def toggle_favorite(annotation_id):
 
 def generate_calibre_url(book_id, spine_index, start_cfi):
     return f"calibre://view-book/books/{book_id}/EPUB?open_at=epubcfi(/{(spine_index + 1) * 2}{start_cfi})"
+
+# Calibre stores chapter title as a json array, this function joins it into a string
+def chapter_array_to_str(array):
+    return ' '.join(json.loads(array) if array else [])
