@@ -9,36 +9,54 @@ def to_datetime(value, format="%Y-%m-%d %H:%M:%S"):
     return datetime.fromtimestamp(value).strftime(format)
 
 
-def load_favorites():
-    favorites_file = current_app.config["FAVORITES_FILE"]
-    if os.path.exists(favorites_file):
-        with open(favorites_file, "r") as f:
+def load_state():
+    state_file = current_app.config["STATE_FILE"]
+    if os.path.exists(state_file):
+        with open(state_file, "r") as f:
             return json.load(f)
     return {}
 
 
-def save_favorites(favorites):
-    favorites_file = current_app.config["FAVORITES_FILE"]
-    with open(favorites_file, "w") as f:
-        json.dump(favorites, f)
+def save_state(state):
+    state_file = current_app.config["STATE_FILE"]
+    with open(state_file, "w") as f:
+        json.dump(state, f)
 
 
 def is_favorite(annotation_id):
-    favorites = load_favorites()
-    return str(annotation_id) in favorites
+    state = load_state()
+    return state.get(str(annotation_id), {}).get("favorite", False)
 
 
 def toggle_favorite(annotation_id):
-    favorites = load_favorites()
+    state = load_state()
     annotation_id_str = str(annotation_id)
 
-    if annotation_id_str in favorites:
-        del favorites[annotation_id_str]
-    else:
-        favorites[annotation_id_str] = True
+    if annotation_id_str not in state:
+        state[annotation_id_str] = {"favorite": False, "read_count": 0}
 
-    save_favorites(favorites)
+    state[annotation_id_str]["favorite"] = not state[annotation_id_str]["favorite"]
+
+    save_state(state)
     return True
+
+
+def increment_read_count(annotation_id):
+    state = load_state()
+    annotation_id_str = str(annotation_id)
+
+    if annotation_id_str not in state:
+        state[annotation_id_str] = {"favorite": False, "read_count": 0}
+
+    state[annotation_id_str]["read_count"] += 1
+
+    save_state(state)
+    return state[annotation_id_str]["read_count"]
+
+
+def get_read_count(annotation_id):
+    state = load_state()
+    return state.get(str(annotation_id), {}).get("read_count", 0)
 
 
 def generate_calibre_url(book_id, spine_index, start_cfi):

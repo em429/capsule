@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import random
 import json
 
-from app.utils import is_favorite, toggle_favorite, load_favorites, chapter_array_to_str
+from app.utils import is_favorite, toggle_favorite, load_state, get_read_count, chapter_array_to_str
 
 
 def get_db_connection():
@@ -44,6 +44,8 @@ def get_random_annotations():
             "book_id": row["book_id"],
             "timestamp": row["timestamp"],
             "chapter_name": chapter_array_to_str(row["chapter_array"]),
+            "is_favorite": is_favorite(row["id"]),
+            "read_count": get_read_count(row["id"]),
         }
         for row in rows
     ]
@@ -112,6 +114,8 @@ def get_book_annotations(book_id):
                 "timestamp": row["timestamp"],
                 "row_index": row["row_index"],
                 "chapter_name": chapter_array_to_str(row["chapter_array"]),
+                "is_favorite": is_favorite(row["id"]),
+                "read_count": get_read_count(row["id"]),
             }
             for row in rows
         ],
@@ -137,11 +141,10 @@ def get_favorited_annotations():
         cur.execute(query)
         rows = cur.fetchall()
 
-    favorites = load_favorites()
     favorited_annotations = {}
 
     for row in rows:
-        if str(row["id"]) in favorites:
+        if is_favorite(row["id"]):
             book_id = row["book_id"]
             if book_id not in favorited_annotations:
                 favorited_annotations[book_id] = {
@@ -158,6 +161,7 @@ def get_favorited_annotations():
                     "start_cfi": row["start_cfi"],
                     "timestamp": row["timestamp"],
                     "is_favorite": True,
+                    "read_count": get_read_count(row["id"]),
                     "chapter_name": chapter_array_to_str(row["chapter_array"]),
                 }
             )
@@ -197,6 +201,8 @@ def get_all_annotations():
             "book_title": row["book_title"],
             "row_index": row["row_index"],
             "chapter_name": chapter_array_to_str(row["chapter_array"]),
+            "is_favorite": is_favorite(row["id"]),
+            "read_count": get_read_count(row["id"]),
         }
         for row in rows
     ]
@@ -282,6 +288,8 @@ def get_flashback_annotations():
                 "start_cfi": row["start_cfi"],
                 "timestamp": row["timestamp"],
                 "chapter_name": chapter_array_to_str(row["chapter_array"]),
+                "is_favorite": is_favorite(row["annotation_id"]),
+                "read_count": get_read_count(row["annotation_id"]),
             }
         )
 
@@ -327,6 +335,7 @@ def get_highlights_with_notes():
                 "start_cfi": row["start_cfi"],
                 "timestamp": row["timestamp"],
                 "is_favorite": is_favorite(row["id"]),
+                "read_count": get_read_count(row["id"]),
                 "chapter_name": chapter_array_to_str(row["chapter_array"]),
             }
         )
