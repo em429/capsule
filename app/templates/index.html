@@ -3,8 +3,7 @@
 {% block content %}
 <div class="space-y-12">
   {% for annotation in annotations %}
-  <div class="">{{highlight_component(annotation)}}</div>
-
+    {{highlight_component(annotation)}}
   {% endfor %}
 </div>
 {% endblock %}
