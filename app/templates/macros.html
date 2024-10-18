@@ -1,5 +1,5 @@
 {% macro highlight_component(annotation, show_title=True) %}
-<div>
+<div class="transition-all duration-300 highlight">
 <!-- title -->
 {% if show_title %}
     <a href="/book/{{ annotation.book_id }}" class="mb-1 text-xl font-semibold text-sky-600 dark:text-sky-400 hover:underline">
