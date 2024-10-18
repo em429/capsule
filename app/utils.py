@@ -60,7 +60,7 @@ def get_last_read(annotation_id):
 
 
 def is_read(annotation_id):
-    return bool(get_last_read)
+    return bool(get_last_read(annotation_id))
 
 
 def generate_calibre_url(book_id, spine_index, start_cfi):
