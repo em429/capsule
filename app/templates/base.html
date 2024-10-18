@@ -1,4 +1,4 @@
-{% from 'macros.html' import highlight_component %}
+{% from 'macros.html' import highlight_component, filter_buttons %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,12 +10,40 @@
 </head>
 <body class="min-h-screen dark:bg-slate-900 bg-slate-100">
     <nav class="sticky top-0 text-sky-50 bg-sky-800 dark:bg-sky-950 dark:text-sky-200">
-        <div class="container flex justify-center items-center px-5 space-x-4 max-w-2xl sm:justify-end">
+        <div class="flex flex-wrap justify-between items-center px-5 space-x-4 max-w-2xl">
+                <div class="flex items-center mt-2 space-x-2 sm:mt-0">
+                    <!-- filter buttons -->
+                    {% if request.path not in [url_for('focused_view'), url_for('books_list'), url_for('favorites')] %}
+                        <button id="favoriteToggle" class="px-2 py-1 text-xs {% if favorite_filter == True %}bg-sky-600{% elif favorite_filter == False %}bg-slate-500{% else %}bg-sky-800{% endif %}" onclick="toggleFilter('favorite')">
+                            {% if favorite_filter == True %}
+                                Favorited
+                            {% elif favorite_filter == False %}
+                                Non-Favorited
+                            {% else %}
+                                Off
+                            {% endif %}
+                        </button>
+                        <button id="readToggle" class="px-2 py-1 text-xs {% if read_filter == True %}bg-sky-600{% elif read_filter == False %}bg-slate-500{% else %}bg-sky-800{% endif %}" onclick="toggleFilter('read')">
+                            {% if read_filter == True %}
+                                Read
+                            {% elif read_filter == False %}
+                                Unread
+                            {% else %}
+                                Off
+                            {% endif %}
+                        </button>
+                    {% endif %}
+                    <!-- end filter buttons -->
+                </div>
+            <div class="flex justify-center items-center space-x-4 sm:justify-end">
                 <a href="{{ url_for('index') }}" class="hover:underline">random</a>
                 <a href="{{ url_for('books_list') }}" class="hover:underline">books</a>
                 <a href="{{ url_for('favorites') }}" class="hover:underline">favorites</a>
                 <a href="{{ url_for('highlights_with_notes') }}" class="hover:underline">notes</a>
                 <a href="{{ url_for('focused_view') }}" class="hover:underline">focused</a>
+            </div>
+
+            
         </div>
     </nav>
 
@@ -66,6 +94,21 @@
         function toggleChapterName(element) {
             const chapterName = element.previousElementSibling;
             chapterName.classList.toggle('hidden');
+        }
+
+        function toggleFilter(filterType) {
+            const urlParams = new URLSearchParams(window.location.search);
+            let currentValue = urlParams.get(filterType);
+            
+            if (currentValue === null) {
+                urlParams.set(filterType, 'true');
+            } else if (currentValue === 'true') {
+                urlParams.set(filterType, 'false');
+            } else {
+                urlParams.delete(filterType);
+            }
+
+            window.location.search = urlParams.toString();
         }
     </script>
 </body>

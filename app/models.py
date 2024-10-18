@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import random
 import json
 
-from app.utils import is_favorite, toggle_favorite, load_state, get_read_count, chapter_array_to_str
+from app.utils import is_favorite, toggle_favorite, load_state, get_read_count, chapter_array_to_str, is_read
 
 
 def get_db_connection():
@@ -13,7 +13,7 @@ def get_db_connection():
     return conn
 
 
-def get_random_annotations():
+def get_random_annotations(favorite_filter=None, read_filter=None):
     query = """
     SELECT a.id, JSON_EXTRACT(a.annot_data, '$.highlighted_text') as highlighted_text,
            JSON_EXTRACT(a.annot_data, '$.notes') as notes,
@@ -25,7 +25,7 @@ def get_random_annotations():
     JOIN books b ON a.book = b.id
     WHERE JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
     ORDER BY RANDOM()
-    LIMIT 3;
+    LIMIT 1000;
     """
 
     with get_db_connection() as conn:
@@ -33,7 +33,7 @@ def get_random_annotations():
         cur.execute(query)
         rows = cur.fetchall()
 
-    return [
+    annotations = [
         {
             "id": row["id"],
             "text": row["highlighted_text"],
@@ -49,6 +49,9 @@ def get_random_annotations():
         }
         for row in rows
     ]
+
+    filtered_annotations = filter_annotations(annotations, favorite_filter, read_filter)
+    return random.sample(filtered_annotations, min(3, len(filtered_annotations)))
 
 
 def get_books_with_annotations():
@@ -76,7 +79,7 @@ def get_books_with_annotations():
     ]
 
 
-def get_book_annotations(book_id):
+def get_book_annotations(book_id, favorite_filter=None, read_filter=None):
     query = """
     SELECT a.id, JSON_EXTRACT(a.annot_data, '$.highlighted_text') as highlighted_text,
            JSON_EXTRACT(a.annot_data, '$.notes') as notes,
@@ -98,25 +101,29 @@ def get_book_annotations(book_id):
     if not rows:
         return None
 
+    annotations = [
+        {
+            "book_title": rows[0]["title"],
+            "book_id": rows[0]["book_id"],
+            "id": row["id"],
+            "text": row["highlighted_text"],
+            "notes": row["notes"],
+            "spine_index": row["spine_index"],
+            "start_cfi": row["start_cfi"],
+            "timestamp": row["timestamp"],
+            "chapter_name": chapter_array_to_str(row["chapter_array"]),
+            "is_favorite": is_favorite(row["id"]),
+            "read_count": get_read_count(row["id"]),
+        }
+        for row in rows
+    ]
+
+    filtered_annotations = filter_annotations(annotations, favorite_filter, read_filter)
+
     return {
         "book_title": rows[0]["title"],
         "book_id": rows[0]["book_id"],
-        "annotations": [
-            {
-                "book_title": rows[0]["title"],
-                "book_id": rows[0]["book_id"],
-                "id": row["id"],
-                "text": row["highlighted_text"],
-                "notes": row["notes"],
-                "spine_index": row["spine_index"],
-                "start_cfi": row["start_cfi"],
-                "timestamp": row["timestamp"],
-                "chapter_name": chapter_array_to_str(row["chapter_array"]),
-                "is_favorite": is_favorite(row["id"]),
-                "read_count": get_read_count(row["id"]),
-            }
-            for row in rows
-        ],
+        "annotations": filtered_annotations,
     }
 
 
@@ -167,7 +174,7 @@ def get_favorited_annotations():
     return favorited_annotations
 
 
-def get_all_annotations():
+def get_all_annotations(favorite_filter=None, read_filter=None):
     query = """
     SELECT a.id, JSON_EXTRACT(a.annot_data, '$.highlighted_text') as highlighted_text,
            JSON_EXTRACT(a.annot_data, '$.notes') as notes,
@@ -186,7 +193,7 @@ def get_all_annotations():
         cur.execute(query)
         rows = cur.fetchall()
 
-    return [
+    annotations = [
         {
             "id": row["id"],
             "text": row["highlighted_text"],
@@ -202,6 +209,8 @@ def get_all_annotations():
         }
         for row in rows
     ]
+
+    return filter_annotations(annotations, favorite_filter, read_filter)
 
 
 def get_recent_books():
@@ -292,7 +301,7 @@ def get_flashback_annotations():
     return {"years_ago": years_ago, "books": flashback_books}
 
 
-def get_highlights_with_notes():
+def get_highlights_with_notes(favorite_filter=None, read_filter=None):
     query = """
     SELECT a.id, JSON_EXTRACT(a.annot_data, '$.highlighted_text') as highlighted_text,
            JSON_EXTRACT(a.annot_data, '$.notes') as notes,
@@ -315,25 +324,41 @@ def get_highlights_with_notes():
     highlights_with_notes = {}
 
     for row in rows:
-        book_id = row["book_id"]
-        if book_id not in highlights_with_notes:
-            highlights_with_notes[book_id] = {
-                "book_title": row["book_title"],
-                "annotations": [],
-            }
-        highlights_with_notes[book_id]["annotations"].append(
-            {
-                "id": row["id"],
-                "book_id": row["book_id"],
-                "text": row["highlighted_text"],
-                "notes": row["notes"],
-                "spine_index": row["spine_index"],
-                "start_cfi": row["start_cfi"],
-                "timestamp": row["timestamp"],
-                "is_favorite": is_favorite(row["id"]),
-                "read_count": get_read_count(row["id"]),
-                "chapter_name": chapter_array_to_str(row["chapter_array"]),
-            }
-        )
+        annotation = {
+            "id": row["id"],
+            "book_id": row["book_id"],
+            "text": row["highlighted_text"],
+            "notes": row["notes"],
+            "spine_index": row["spine_index"],
+            "start_cfi": row["start_cfi"],
+            "timestamp": row["timestamp"],
+            "is_favorite": is_favorite(row["id"]),
+            "read_count": get_read_count(row["id"]),
+            "chapter_name": chapter_array_to_str(row["chapter_array"]),
+        }
+        
+        if filter_annotation(annotation, favorite_filter, read_filter):
+            book_id = row["book_id"]
+            if book_id not in highlights_with_notes:
+                highlights_with_notes[book_id] = {
+                    "book_title": row["book_title"],
+                    "annotations": [],
+                }
+            highlights_with_notes[book_id]["annotations"].append(annotation)
 
     return highlights_with_notes
+
+
+def filter_annotations(annotations, favorite_filter, read_filter):
+    return [
+        annotation for annotation in annotations
+        if filter_annotation(annotation, favorite_filter, read_filter)
+    ]
+
+
+def filter_annotation(annotation, favorite_filter, read_filter):
+    if favorite_filter is not None and annotation["is_favorite"] != favorite_filter:
+        return False
+    if read_filter is not None and is_read(annotation["id"]) != read_filter:
+        return False
+    return True

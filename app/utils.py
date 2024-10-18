@@ -59,6 +59,10 @@ def get_read_count(annotation_id):
     return state.get(str(annotation_id), {}).get("read_count", 0)
 
 
+def is_read(annotation_id):
+    return get_read_count(annotation_id) > 0
+
+
 def generate_calibre_url(book_id, spine_index, start_cfi):
     return f"calibre://view-book/books/{book_id}/EPUB?open_at=epubcfi(/{(spine_index + 1) * 2}{start_cfi})"
 

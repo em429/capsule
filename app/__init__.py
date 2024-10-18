@@ -18,10 +18,17 @@ app.jinja_env.filters["to_datetime"] = to_datetime
 app.jinja_env.filters["generate_calibre_url"] = generate_calibre_url
 
 
+def get_filter_params():
+    favorite_filter = request.args.get('favorite', type=lambda v: v.lower() == 'true', default=None)
+    read_filter = request.args.get('read', type=lambda v: v.lower() == 'true', default=None)
+    return favorite_filter, read_filter
+
+
 @app.route("/", methods=["GET"])
 def index():
-    annotations = get_random_annotations()
-    return render_template("index.html", annotations=annotations)
+    favorite_filter, read_filter = get_filter_params()
+    annotations = get_random_annotations(favorite_filter, read_filter)
+    return render_template("index.html", annotations=annotations, favorite_filter=favorite_filter, read_filter=read_filter)
 
 
 @app.route("/books", methods=["GET"])
@@ -33,16 +40,17 @@ def books_list():
         "books.html",
         recent_books=recent_books,
         books=books,
-        flashback_data=flashback_data,
+        flashback_data=flashback_data
     )
 
 
 @app.route("/book/<int:book_id>", methods=["GET"])
 def book_annotations(book_id):
-    book_data = get_book_annotations(book_id)
+    favorite_filter, read_filter = get_filter_params()
+    book_data = get_book_annotations(book_id, favorite_filter, read_filter)
     if book_data is None:
         abort(404)
-    return render_template("book.html", book_data=book_data)
+    return render_template("book.html", book_data=book_data, favorite_filter=favorite_filter, read_filter=read_filter)
 
 
 @app.route("/toggle_favorite/<int:annotation_id>", methods=["POST"])
@@ -114,5 +122,6 @@ def focus_annotation(annotation_id):
 
 @app.route("/highlights_with_notes", methods=["GET"])
 def highlights_with_notes():
-    annotations = get_highlights_with_notes()
-    return render_template("highlights_with_notes.html", annotations=annotations)
+    favorite_filter, read_filter = get_filter_params()
+    annotations = get_highlights_with_notes(favorite_filter, read_filter)
+    return render_template("highlights_with_notes.html", annotations=annotations, favorite_filter=favorite_filter, read_filter=read_filter)
