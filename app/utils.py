@@ -56,7 +56,10 @@ def update_last_read(annotation_id):
 
 def get_last_read(annotation_id):
     state = load_state()
-    return state.get(str(annotation_id), {}).get("last_read", None)
+    last_read = state.get(str(annotation_id), {}).get("last_read", None)
+    if last_read:
+        return float(last_read)
+    return None
 
 
 def is_read(annotation_id):

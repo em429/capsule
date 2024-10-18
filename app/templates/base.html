@@ -14,7 +14,8 @@
                 <div class="flex items-center mt-2 space-x-2 sm:mt-0">
                     <!-- filter buttons -->
                     {% if request.path not in [url_for('focused_view'), url_for('books_list'), url_for('favorites')] %}
-                        <button id="favoriteToggle" class="px-2 py-1 text-xs {% if favorite_filter == True %}bg-sky-600{% elif favorite_filter == False %}bg-slate-500{% else %}bg-sky-800{% endif %}" onclick="toggleFilter('favorite')">
+                        <button id="favoriteToggle" class="px-2 py-1 text-xs {% if favorite_filter == True %}bg-sky-600{% elif favorite_filter == False %}bg-slate-500{% else %}bg-sky-800{% endif %}"
+                                onclick="toggleFilter('favorite')">
                             {% if favorite_filter == True %}
                                 Favorited
                             {% elif favorite_filter == False %}
@@ -23,7 +24,8 @@
                                 Off
                             {% endif %}
                         </button>
-                        <button id="readToggle" class="px-2 py-1 text-xs {% if read_filter == True %}bg-sky-600{% elif read_filter == False %}bg-slate-500{% else %}bg-sky-800{% endif %}" onclick="toggleFilter('read')">
+                        <button id="readToggle" class="px-2 py-1 text-xs {% if read_filter == True %}bg-sky-600{% elif read_filter == False %}bg-slate-500{% else %}bg-sky-800{% endif %}"
+                                onclick="toggleFilter('read')">
                             {% if read_filter == True %}
                                 Read
                             {% elif read_filter == False %}
