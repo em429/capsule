@@ -10,7 +10,7 @@ from app.models import (
     get_flashback_annotations,
     get_highlights_with_notes,
 )
-from app.utils import is_favorite, toggle_favorite, to_datetime, generate_calibre_url, increment_read_count, get_read_count
+from app.utils import is_favorite, toggle_favorite, to_datetime, generate_calibre_url, update_last_read
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -59,10 +59,10 @@ def toggle_favorite_route(annotation_id):
     return jsonify({"success": success})
 
 
-@app.route("/increment_read_count/<int:annotation_id>", methods=["POST"])
-def increment_read_count_route(annotation_id):
-    new_count = increment_read_count(annotation_id)
-    return jsonify({"success": True, "new_count": new_count})
+@app.route("/update_last_read/<int:annotation_id>", methods=["POST"])
+def update_last_read_route(annotation_id):
+    new_timestamp = update_last_read(annotation_id)
+    return jsonify({"success": True, "new_timestamp": new_timestamp})
 
 
 @app.route("/favorites", methods=["GET"])

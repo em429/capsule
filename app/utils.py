@@ -33,7 +33,7 @@ def toggle_favorite(annotation_id):
     annotation_id_str = str(annotation_id)
 
     if annotation_id_str not in state:
-        state[annotation_id_str] = {"favorite": False, "read_count": 0}
+        state[annotation_id_str] = {"favorite": False, "last_read": None}
 
     state[annotation_id_str]["favorite"] = not state[annotation_id_str]["favorite"]
 
@@ -41,26 +41,26 @@ def toggle_favorite(annotation_id):
     return True
 
 
-def increment_read_count(annotation_id):
+def update_last_read(annotation_id):
     state = load_state()
     annotation_id_str = str(annotation_id)
 
     if annotation_id_str not in state:
-        state[annotation_id_str] = {"favorite": False, "read_count": 0}
+        state[annotation_id_str] = {"favorite": False, "last_read": None}
 
-    state[annotation_id_str]["read_count"] += 1
+    state[annotation_id_str]["last_read"] = datetime.now().timestamp()
 
     save_state(state)
-    return state[annotation_id_str]["read_count"]
+    return state[annotation_id_str]["last_read"]
 
 
-def get_read_count(annotation_id):
+def get_last_read(annotation_id):
     state = load_state()
-    return state.get(str(annotation_id), {}).get("read_count", 0)
+    return state.get(str(annotation_id), {}).get("last_read", None)
 
 
 def is_read(annotation_id):
-    return get_read_count(annotation_id) > 0
+    return bool(get_last_read)
 
 
 def generate_calibre_url(book_id, spine_index, start_cfi):

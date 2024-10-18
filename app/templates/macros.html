@@ -34,8 +34,8 @@
     <!-- open in epub-viewer button -->
     {{ svg_open_in_epub_viewer(annotation) }}
 
-    <!-- read count -->
-    {{ read_count(annotation) }}
+    <!-- last read timestamp -->
+    {{ last_read(annotation) }}
 
     <!-- timestamp -->
     <a
@@ -93,12 +93,16 @@
 </button>
 {% endmacro %}
 
-{% macro read_count(annotation) %}
+{% macro last_read(annotation) %}
 <button
-  class="text-2xl font-light read-count-btn text-slate-400/70 dark:text-sky-900"
+  class="px-1 text-sm font-light rounded dark:bg-sky-950 last-read-btn text-slate-400/70 dark:text-sky-800"
   data-annotation-id="{{ annotation.id }}"
-  data-read-count="{{ annotation.read_count }}"
+  data-last-read="{{ annotation.last_read }}"
 >
-  <span class="read-count">{{ annotation.read_count }}</span>
+  {% if annotation.last_read %}
+  <span class="last-read">{{ annotation.last_read | float | to_datetime('%Y-%m-%d %H:%M:%S') }}</span>
+  {% else %}
+  <span class="last-read">mark as read</span>
+  {% endif %}
 </button>
 {% endmacro %}

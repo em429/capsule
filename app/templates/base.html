@@ -77,15 +77,17 @@
                 }
             }
 
-            if (e.target.closest('.read-count-btn')) {
-                const btn = e.target.closest('.read-count-btn');
+            if (e.target.closest('.last-read-btn')) {
+                const btn = e.target.closest('.last-read-btn');
                 const annotationId = btn.dataset.annotationId;
 
-                fetch(`/increment_read_count/${annotationId}`, { method: 'POST' })
+                fetch(`/update_last_read/${annotationId}`, { method: 'POST' })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            btn.querySelector('.read-count').textContent = data.new_count;
+                            const date = new Date(data.new_timestamp * 1000);
+                            const formattedDate = date.toISOString().slice(0, 19).replace('T', ' ');
+                            btn.querySelector('.last-read').textContent = formattedDate;
                         }
                     });
             }
