@@ -51,7 +51,7 @@
 
     <main class="container px-5 mt-8 max-w-2xl">
     {% block content %}{% endblock %}
-        <a href="/">
+        <a href="{{request.url}}">
             <img
                 class="mb-8 my-8 max-w-[200px] mx-auto"
                 src="{{ url_for('static', filename='images/doggo.webp') }}"
