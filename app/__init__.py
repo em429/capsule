@@ -21,9 +21,6 @@ app.jinja_env.filters["generate_calibre_url"] = generate_calibre_url
 @app.route("/", methods=["GET"])
 def index():
     annotations = get_random_annotations()
-    for annotation in annotations:
-        annotation["is_favorite"] = is_favorite(annotation["id"])
-        annotation["read_count"] = get_read_count(annotation["id"])
     return render_template("index.html", annotations=annotations)
 
 
@@ -45,9 +42,6 @@ def book_annotations(book_id):
     book_data = get_book_annotations(book_id)
     if book_data is None:
         abort(404)
-    for annotation in book_data["annotations"]:
-        annotation["is_favorite"] = is_favorite(annotation["id"])
-        annotation["read_count"] = get_read_count(annotation["id"])
     return render_template("book.html", book_data=book_data)
 
 
@@ -66,9 +60,6 @@ def increment_read_count_route(annotation_id):
 @app.route("/favorites", methods=["GET"])
 def favorites():
     favorited_annotations = get_favorited_annotations()
-    for book in favorited_annotations.values():
-        for annotation in book["annotations"]:
-            annotation["read_count"] = get_read_count(annotation["id"])
     return render_template(
         "favorites.html", favorited_annotations=favorited_annotations
     )
@@ -102,8 +93,6 @@ def focused_view():
         index = total - 1
 
     current_annotation = annotations[index]
-    current_annotation["is_favorite"] = is_favorite(current_annotation["id"])
-    current_annotation["read_count"] = get_read_count(current_annotation["id"])
 
     return render_template(
         "focused.html",
@@ -126,7 +115,4 @@ def focus_annotation(annotation_id):
 @app.route("/highlights_with_notes", methods=["GET"])
 def highlights_with_notes():
     annotations = get_highlights_with_notes()
-    for book in annotations.values():
-        for annotation in book["annotations"]:
-            annotation["read_count"] = get_read_count(annotation["id"])
     return render_template("highlights_with_notes.html", annotations=annotations)
