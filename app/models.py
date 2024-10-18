@@ -83,8 +83,7 @@ def get_book_annotations(book_id):
            JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
            JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
            JSON_EXTRACT(a.annot_data, '$.toc_family_titles') as chapter_array,
-           a.timestamp, b.title, b.id as book_id,
-           ROW_NUMBER() OVER (ORDER BY a.timestamp) - 1 as row_index
+           a.timestamp, b.title, b.id as book_id
     FROM annotations a
     JOIN books b ON a.book = b.id
     WHERE a.book = ? AND JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
@@ -112,7 +111,6 @@ def get_book_annotations(book_id):
                 "spine_index": row["spine_index"],
                 "start_cfi": row["start_cfi"],
                 "timestamp": row["timestamp"],
-                "row_index": row["row_index"],
                 "chapter_name": chapter_array_to_str(row["chapter_array"]),
                 "is_favorite": is_favorite(row["id"]),
                 "read_count": get_read_count(row["id"]),
@@ -176,8 +174,7 @@ def get_all_annotations():
            JSON_EXTRACT(a.annot_data, '$.spine_index') as spine_index,
            JSON_EXTRACT(a.annot_data, '$.start_cfi') as start_cfi,
            JSON_EXTRACT(a.annot_data, '$.toc_family_titles') as chapter_array,
-           a.timestamp, b.id as book_id, b.title as book_title,
-           ROW_NUMBER() OVER (ORDER BY a.timestamp DESC, b.title) - 1 as row_index
+           a.timestamp, b.id as book_id, b.title as book_title
     FROM annotations a
     JOIN books b ON a.book = b.id
     WHERE JSON_EXTRACT(a.annot_data, '$.highlighted_text') != ''
@@ -199,7 +196,6 @@ def get_all_annotations():
             "timestamp": row["timestamp"],
             "book_id": row["book_id"],
             "book_title": row["book_title"],
-            "row_index": row["row_index"],
             "chapter_name": chapter_array_to_str(row["chapter_array"]),
             "is_favorite": is_favorite(row["id"]),
             "read_count": get_read_count(row["id"]),
