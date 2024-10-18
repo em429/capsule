@@ -100,9 +100,9 @@
   data-last-read="{{ annotation.last_read }}"
 >
   {% if annotation.last_read %}
-  <span class="last-read">{{ annotation.last_read | to_datetime('%Y-%m-%d %H:%M:%S') }}</span>
+    <span class="last-read">{{ annotation.last_read | to_datetime('%Y-%m-%d %H:%M:%S') }}</span>
   {% else %}
-  <span class="last-read">mark as read</span>
+    <span class="last-read">mark as read</span>
   {% endif %}
 </button>
 {% endmacro %}
