@@ -38,20 +38,12 @@ function toggleChapterName(element) {
     chapterName.classList.toggle('hidden');
 }
 
-// Toggle a url param value between true/false, can be used for any named parameter
 function toggleFilter(filterType) {
-    const urlParams = new URLSearchParams(window.location.search);
-    let currentValue = urlParams.get(filterType);
-    
-    if (currentValue === null) {
-        urlParams.set(filterType, 'true');
-    } else if (currentValue === 'true') {
-        urlParams.set(filterType, 'false');
-    } else {
-        urlParams.delete(filterType);
-    }
-
-    window.location.search = urlParams.toString();
+    fetch(`/toggle_filter/${filterType}`, { method: 'GET' })
+        .then(response => {
+            if (response.ok) { location.reload(); }
+        })
+        .catch(error => console.error('Error:', error));
 }
 
 // Highlight navigation buttons

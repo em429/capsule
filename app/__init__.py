@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, abort, request, url_for, redirect
+from flask import Flask, render_template, jsonify, abort, request, url_for, redirect, session
 from config import Config
 from app.models import (
     get_random_annotations,
@@ -19,8 +19,9 @@ app.jinja_env.filters["generate_calibre_url"] = generate_calibre_url
 
 
 def get_filter_params():
-    favorite_filter = request.args.get('favorite', type=lambda v: v.lower() == 'true', default=None)
-    read_filter = request.args.get('read', type=lambda v: v.lower() == 'true', default=None)
+    favorite_filter = session.get('favorite_filter')
+    read_filter = session.get('read_filter')
+    
     return favorite_filter, read_filter
 
 
@@ -125,3 +126,17 @@ def highlights_with_notes():
     favorite_filter, read_filter = get_filter_params()
     annotations = get_highlights_with_notes(favorite_filter, read_filter)
     return render_template("highlights_with_notes.html", annotations=annotations, favorite_filter=favorite_filter, read_filter=read_filter)
+
+
+@app.route('/toggle_filter/<filter_type>')
+def toggle_filter(filter_type):
+    current_value = session.get(f'{filter_type}_filter')
+    
+    if current_value is None:
+        session[f'{filter_type}_filter'] = True
+    elif current_value is True:
+        session[f'{filter_type}_filter'] = False
+    else:
+        session.pop(f'{filter_type}_filter', None)
+    
+    return '', 204  # No content response
