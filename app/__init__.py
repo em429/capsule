@@ -128,15 +128,23 @@ def highlights_with_notes():
     return render_template("highlights_with_notes.html", annotations=annotations, favorite_filter=favorite_filter, read_filter=read_filter)
 
 
-@app.route('/toggle_filter/<filter_type>')
-def toggle_filter(filter_type):
-    current_value = session.get(f'{filter_type}_filter')
+@app.route('/apply_filters')
+def apply_filters():
+    read_filter = request.args.get('read_filter')
+    favorite_filter = request.args.get('favorite_filter')
     
-    if current_value is None:
-        session[f'{filter_type}_filter'] = True
-    elif current_value is True:
-        session[f'{filter_type}_filter'] = False
-    else:
-        session.pop(f'{filter_type}_filter', None)
+    if read_filter == 'off':
+        session.pop('read_filter', None)
+    elif read_filter == 'read':
+        session['read_filter'] = True
+    elif read_filter == 'unread':
+        session['read_filter'] = False
+    
+    if favorite_filter == 'off':
+        session.pop('favorite_filter', None)
+    elif favorite_filter == 'favorites':
+        session['favorite_filter'] = True
+    elif favorite_filter == 'non_favorites':
+        session['favorite_filter'] = False
     
     return '', 204  # No content response

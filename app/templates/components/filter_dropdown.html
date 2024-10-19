@@ -1,0 +1,59 @@
+<!-- Filter dropdown -->
+<div class="inline-block relative text-left">
+
+  <div class="hidden absolute bottom-0 right-14 w-56 text-sky-900 bg-sky-50 rounded-md divide-y divide-indigo-200 ring-1 ring-indigo-200 shadow-lg origin-top-right dark:ring-0 dark:divide-sky-950 dark:text-sky-50 dark:bg-sky-800 focus:outline-none"
+        role="menu" aria-orientation="vertical" aria-labelledby="filter-menu-button" tabindex="-1" id="filter-menu">
+    <div class="py-1" role="none">
+      <p class="block px-4 py-2 text-sm text-sky-900 dark:text-sky-50" role="menuitem">Read filter</p>
+      <div class="px-4 space-y-1 accent-indigo-300 dark:accent-sky-400">
+        <label class="flex items-center">
+          <input type="radio" name="read_filter" value="off" class="form-radio" {% if session.get('read_filter') is none %}checked{% endif %}>
+          <span class="ml-2">Off</span>
+        </label>
+        <label class="flex items-center">
+          <input type="radio" name="read_filter" value="read" class="form-radio" {% if session.get('read_filter') == True %}checked{% endif %}>
+          <span class="ml-2">Read-only</span>
+        </label>
+        <label class="flex items-center">
+          <input type="radio" name="read_filter" value="unread" class="form-radio" {% if session.get('read_filter') == False %}checked{% endif %}>
+          <span class="ml-2">Unread-only</span>
+        </label>
+      </div>
+    </div>
+    <div class="py-1" role="none">
+      <p class="block px-4 py-2 text-sm text-sky-900 dark:text-sky-50" role="menuitem">Favorited filter</p>
+      <div class="px-4 space-y-1 accent-indigo-300 dark:accent-sky-400">
+        <label class="flex items-center">
+          <input type="radio" name="favorite_filter" value="off" class="form-radio" {% if session.get('favorite_filter') is none %}checked{% endif %}>
+          <span class="ml-2">Off</span>
+        </label>
+        <label class="flex items-center">
+          <input type="radio" name="favorite_filter" value="favorites" class="form-radio" {% if session.get('favorite_filter') == True %}checked{% endif %}>
+          <span class="ml-2">Favorites-only</span>
+        </label>
+        <label class="flex items-center">
+          <input type="radio" name="favorite_filter" value="non_favorites" class="form-radio" {% if session.get('favorite_filter') == False %}checked{% endif %}>
+          <span class="ml-2">Non-favorites only</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="py-1" role="none">
+      <button type="button" id="apply-filters" class="block px-4 py-2 w-full text-sm text-left text-sky-900 hover:bg-sky-200 dark:text-sky-50 dark:hover:bg-sky-950" role="menuitem">Apply Filters</button>
+    </div>
+
+  </div>
+
+
+  <div>
+    <button type="button" class="inline-flex justify-center items-center text-sm font-medium text-white bg-sky-700 rounded rounded-md shadow-sm size-12 hover:bg-sky-800" id="filter-menu-button" aria-expanded="false" aria-haspopup="true">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+      </svg>
+
+
+    </button>
+  </div>
+
+</div>
+<!-- End filter dropdown -->

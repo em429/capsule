@@ -46,6 +46,56 @@ function toggleFilter(filterType) {
         .catch(error => console.error('Error:', error));
 }
 
+
+
+
+// Filter dropdown
+//////////////////
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButton = document.getElementById('filter-menu-button');
+    const filterMenu = document.getElementById('filter-menu');
+    const applyFiltersButton = document.getElementById('apply-filters');
+  
+    filterButton.addEventListener('click', function() {
+      filterMenu.classList.toggle('hidden');
+    });
+  
+    applyFiltersButton.addEventListener('click', function() {
+      const readFilter = document.querySelector('input[name="read_filter"]:checked').value;
+      const favoriteFilter = document.querySelector('input[name="favorite_filter"]:checked').value;
+  
+      applyFilters(readFilter, favoriteFilter);
+    });
+  
+    // Close the dropdown when clicking outside of it
+    document.addEventListener('click', function(event) {
+      if (!filterButton.contains(event.target) && !filterMenu.contains(event.target)) {
+        filterMenu.classList.add('hidden');
+      }
+    });
+  });
+  
+  function applyFilters(readFilter, favoriteFilter) {
+    const params = new URLSearchParams();
+    params.append('read_filter', readFilter);
+    params.append('favorite_filter', favoriteFilter);
+  
+    fetch('/apply_filters?' + params.toString(), { method: 'GET' })
+      .then(response => {
+        if (response.ok) { 
+          location.reload();
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  }
+
+
+
+
+
+
+
+
 // Highlight navigation buttons
 ///////////////////////////////
 

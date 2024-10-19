@@ -11,32 +11,6 @@
 <body class="min-h-screen dark:bg-slate-900 bg-slate-100">
     <nav class="sticky top-0 text-sky-50 bg-sky-800 dark:bg-sky-950 dark:text-sky-200">
         <div class="flex flex-wrap justify-between items-center px-5 space-x-4 max-w-2xl">
-                <div class="flex items-center mt-2 space-x-2 sm:mt-0">
-                    <!-- filter buttons -->
-                    {% if request.path not in [url_for('focused_view'), url_for('books_list'), url_for('favorites')] %}
-                        <button id="favoriteToggle" class="px-2 py-1 text-xs {% if favorite_filter == True %}bg-sky-600{% elif favorite_filter == False %}bg-slate-500{% else %}bg-sky-800{% endif %}"
-                                onclick="toggleFilter('favorite')">
-                            {% if session.get('favorite_filter') == True %}
-                                Favorited
-                            {% elif session.get('favorite_filter') == False %}
-                                Non-Favorited
-                            {% else %}
-                                Off
-                            {% endif %}
-                        </button>
-                        <button id="readToggle" class="px-2 py-1 text-xs {% if read_filter == True %}bg-sky-600{% elif read_filter == False %}bg-slate-500{% else %}bg-sky-800{% endif %}"
-                                onclick="toggleFilter('read')">
-                            {% if session.get('read_filter') == True %}
-                                Read
-                            {% elif session.get('read_filter') == False %}
-                                Unread
-                            {% else %}
-                                Off
-                            {% endif %}
-                        </button>
-                    {% endif %}
-                    <!-- end filter buttons -->
-                </div>
             <div class="flex justify-center items-center space-x-4 sm:justify-end">
                 <a href="{{ url_for('index') }}" class="hover:underline">random</a>
                 <a href="{{ url_for('books_list') }}" class="hover:underline">books</a>
@@ -67,8 +41,11 @@
         <!-- Navigation HUD — max-w-2xl is 42rem, so I'm placing this slightly wider on desktop view -->
         <div class="flex fixed right-0 bottom-0 left-0 justify-end px-5 pb-5 max-w-[46rem]">
             <div class="flex flex-col space-y-2">
-                <button id="prevHighlight" class="px-4 py-2 font-bold text-white bg-indigo-600 rounded hover:bg-indigo-700">↑</button>
-                <button id="nextHighlight" class="px-4 py-2 font-bold text-white bg-indigo-600 rounded hover:bg-indigo-700">↓</button>
+                {% if request.path not in [url_for('focused_view'), url_for('books_list'), url_for('favorites')] %}
+                    {% include "components/filter_dropdown.html" %}
+                {% endif %}
+                <button id="prevHighlight" class="font-bold text-white bg-sky-700 rounded size-12 hover:bg-sky-800">↑</button>
+                <button id="nextHighlight" class="font-bold text-white bg-sky-700 rounded size-12 hover:bg-sky-800">↓</button>
             </div>
         </div>
         
