@@ -1,42 +1,43 @@
 {% macro highlight_component(annotation, show_title=True) %}
 <div class="p-2 rounded transition-all duration-300 highlight">
-<!-- title -->
-{% if show_title %}
-    <a href="/book/{{ annotation.book_id }}" class="mb-1 text-xl font-semibold text-sky-600 dark:text-sky-400 hover:underline">
-    {{ annotation.book_title }}
-  </a>
-{% endif %}
+  <!-- title -->
+  {% if show_title %}
+      <a href="/book/{{ annotation.book_id }}" class="mb-1 text-xl font-semibold text-sky-600 dark:text-sky-400 hover:underline">
+      {{ annotation.book_title }}
+    </a>
+  {% endif %}
 
-<!-- chapter name (hidden by default) -->
-<p class="hidden mb-2 text-sm text-slate-500 dark:text-sky-300" data-chapter-name>
-  {{ annotation.chapter_name }}
-</p>
+  <!-- chapter name (hidden by default) -->
+  <p class="hidden mb-2 text-sm text-slate-500 dark:text-sky-300" data-chapter-name>
+    {{ annotation.chapter_name }}
+  </p>
 
-<!-- text (toggles chapter name on click) -->
-<p class="mb-2 cursor-pointer text-slate-700 dark:text-sky-200" onclick="toggleChapterName(this)">
-  {{ annotation.text }}
-</p>
+  <!-- text (toggles chapter name on click) -->
+  <p class="mb-2 cursor-pointer text-slate-700 dark:text-sky-200" onclick="toggleChapterName(this)">
+    {{ annotation.text }}
+  </p>
 
-<!-- notes -->
-{% if annotation.notes %}
-<div
-  class="flex justify-between p-2 mt-3 mb-3 space-x-3 bg-sky-100 rounded border border-sky-200 shadow dark:bg-sky-950 dark:border-sky-900 shadow-sky-200 dark:shadow-none"
->
-  <p class="text-sm text-sky-800 dark:text-sky-300">{{ annotation.notes }}</p>
-</div>
-{% endif %}
+  <!-- notes -->
+  {% if annotation.notes %}
+  <div
+    class="flex justify-between p-2 mt-3 mb-3 space-x-3 bg-sky-100 rounded border border-sky-200 shadow dark:bg-sky-950 dark:border-sky-900 shadow-sky-200 dark:shadow-none"
+  >
+    <p class="text-sm text-sky-800 dark:text-sky-300">{{ annotation.notes }}</p>
+  </div>
+  {% endif %}
 
-<div class="flex justify-between items-center">
-  <div class="flex items-center space-x-3">
-    <!-- favorite button-->
-    {{ svg_favorite(annotation) }}
+  <div class="flex justify-between items-center">
+    <div class="flex items-center space-x-3">
+      <!-- favorite button-->
+      {{ svg_favorite(annotation) }}
 
-    <!-- open in epub-viewer button -->
-    {{ svg_open_in_epub_viewer(annotation) }}
+      <!-- open in epub-viewer button -->
+      {{ svg_open_in_epub_viewer(annotation) }}
 
-    <!-- last read timestamp -->
-    {{ last_read(annotation) }}
+      <!-- last read timestamp -->
+      {{ last_read(annotation) }}
 
+    </div>
     <!-- timestamp -->
     <a
       href="{{ url_for('focus_annotation', annotation_id=annotation.id, book_id=annotation.book_id) }}"
@@ -45,7 +46,6 @@
       {{ annotation.timestamp | float | to_datetime() }}
     </a>
   </div>
-</div>
 </div>
 {% endmacro %}
 
