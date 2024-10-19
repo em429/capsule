@@ -98,7 +98,7 @@ function navigateHighlights(direction) {
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
   window.scrollTo({
-    top: rect.top + scrollTop - 80, // 20px padding from the top
+    top: rect.top + scrollTop - 80, // padding from the top
     behavior: 'smooth'
   });
 }
@@ -123,10 +123,11 @@ style.textContent = `
     100% { outline-color: rgba(99, 102, 241, 0.3); }
   }
   .highlight-current {
-    outline: 3px solid rgba(99, 102, 241, 0.3);
-    outline-offset: 6px;
-    //outline-style: dotted;
+    outline: 2px solid rgba(99, 102, 241, 0.3);
+    outline-offset: 0px;
+    //outline-style: dashed;
     animation: fadeOutline 1s ease-in-out;
+    background-color: rgba(99, 102, 241, 0.1);
   }
 `;
 document.head.appendChild(style);

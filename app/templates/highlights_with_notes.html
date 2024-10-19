@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Highlights with Notes{% endblock %}
 {% block content %}
-<div class="space-y-8">
+<div class="space-y-12">
   {% for book_id, book_data in annotations.items() %}
   <div class="book-section">
-    <h2 class="mb-4 text-2xl font-semibold text-sky-600 dark:text-sky-400">
+    <h2 class="mb-4 ml-2 text-2xl font-semibold text-sky-600 dark:text-sky-400">
       <a href="/book/{{ book_id }}" class="hover:underline">
         {{ book_data.book_title }}</a
       >
