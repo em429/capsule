@@ -50,7 +50,12 @@
     </nav>
 
     <main class="container px-3 mt-8 max-w-2xl">
-    {% block content %}{% endblock %}
+
+        <!-- Main content -->
+        {% block content %}
+        {% endblock %}
+
+        <!-- Mascot -->
         <a href="{{request.url}}">
             <img
                 class="mb-8 my-8 max-w-[200px] mx-auto"
@@ -58,6 +63,15 @@
                 alt="Illustration of dog fetching stack of papers"
             />
         </a>
+
+        <!-- Navigation HUD — max-w-2xl is 42rem, so I'm placing this slightly wider on desktop view -->
+        <div class="flex fixed right-0 bottom-0 left-0 justify-end px-5 pb-5 max-w-[46rem]">
+            <div class="flex flex-col space-y-2">
+                <button id="prevHighlight" class="px-4 py-2 font-bold text-white bg-indigo-600 rounded hover:bg-indigo-700">↑</button>
+                <button id="nextHighlight" class="px-4 py-2 font-bold text-white bg-indigo-600 rounded hover:bg-indigo-700">↓</button>
+            </div>
+        </div>
+        
     </main>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>

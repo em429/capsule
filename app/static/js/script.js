@@ -53,15 +53,6 @@ function toggleFilter(filterType) {
 const highlights = document.querySelectorAll('.highlight');
 let currentHighlightIndex = -1;
 
-// Create navigation buttons
-const navContainer = document.createElement('div');
-navContainer.className = 'flex fixed right-5 bottom-5 flex-col space-y-2';
-navContainer.innerHTML = `
-  <button id="prevHighlight" class="px-4 py-2 font-bold text-white bg-indigo-500 rounded hover:bg-indigo-700">↑</button>
-  <button id="nextHighlight" class="px-4 py-2 font-bold text-white bg-indigo-500 rounded hover:bg-indigo-700">↓</button>
-`;
-document.body.appendChild(navContainer);
-
 // Add event listeners to buttons
 document.getElementById('prevHighlight').addEventListener('click', () => navigateHighlights('prev'));
 document.getElementById('nextHighlight').addEventListener('click', () => navigateHighlights('next'));
