@@ -8,8 +8,6 @@ I built Capsule because I wasn't reviewing any of my (4500+) highlights I made i
 
 The best way to use Capsule is to run it 24/7 on a server, and open it on your phone whenever you have a few mins. (great alternative to news, social media, etc.)
 
-I know solutions like Readwise exist; but I'd rather not lock my data and invest lots of time into a commercial, closed source webapp that could diseapper any day. Also, I'd rather have my highlights linked to the books they are in and to their exact location using epubcfi. Which is how Calibre stores things.
-
 ### Main Features:
 
 - The frontpage displays 3 random annotations
