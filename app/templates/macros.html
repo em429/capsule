@@ -29,10 +29,10 @@
   <div class="flex justify-between items-center">
     <div class="flex items-center space-x-3">
       <!-- favorite button-->
-      {{ svg_favorite(annotation) }}
+      {{ toggle_favorite(annotation) }}
 
       <!-- open in epub-viewer button -->
-      {{ svg_open_in_epub_viewer(annotation) }}
+      {{ open_in_epub_viewer(annotation) }}
 
       <!-- last read timestamp -->
       {{ last_read(annotation) }}
@@ -49,7 +49,7 @@
 </div>
 {% endmacro %}
 
-{% macro svg_open_in_epub_viewer(annotation) %}
+{% macro open_in_epub_viewer(annotation) %}
 <a
   href="{{annotation.book_id | generate_calibre_url(annotation.spine_index, annotation.start_cfi) | safe }}"
   class="text-slate-400/70 dark:text-sky-900"
@@ -71,7 +71,7 @@
 </a>
 {% endmacro %}
 
-{% macro svg_favorite(annotation) %}
+{% macro toggle_favorite(annotation) %}
 <button
   class="favorite-btn"
   data-annotation-id="{{ annotation.id }}"
